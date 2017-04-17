@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.pikup.Registration">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="40sp"
+        android:layout_marginTop="30dp"
+        android:text="Registration"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/enterNameRegister"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:hint="Enter your Name"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/enterEmailRegister"
+        android:inputType="textEmailAddress"
+        android:layout_below="@+id/enterNameRegister"
+        android:layout_centerHorizontal="true"
+        android:hint="Enter your GaTech Email Address" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/enterPasswordRegister"
+        android:layout_below="@+id/enterEmailRegister"
+        android:layout_centerHorizontal="true"
+        android:hint="Enter your Password"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/registerButton"
+        android:text="Register"
+        android:layout_below="@+id/enterPasswordRegister"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentRight="true"
+        android:onClick="registerAttempt"
+        android:layout_marginRight="100dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cancelRegister"
+        android:layout_toLeftOf="@+id/registerButton"
+        android:layout_below="@id/enterPasswordRegister"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:onClick="cancelRegister"
+        android:text="Back"/>
+</RelativeLayout>

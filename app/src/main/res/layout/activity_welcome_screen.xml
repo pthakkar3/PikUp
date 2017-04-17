@@ -6,15 +6,15 @@
     tools:context="com.pikup.WelcomeScreen">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/logo"
         android:layout_width="200dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_height="200dp"
-        android:src="@drawable/Logo" />
+        android:src="@drawable/logo" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/titleWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="PikUp"
@@ -23,20 +23,22 @@
         android:textSize="50sp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/logInWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/button2"
+        android:layout_alignBottom="@+id/registerWelcome"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="60dp"
+        android:onClick="pressLogInWelcome"
         android:text="Log In" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/registerWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
+        android:onClick="pressRegisterWelcome"
         android:text="Register" />
 </RelativeLayout>
