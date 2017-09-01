@@ -1,0 +1,10 @@
+## Story/Task Details
+- [ ] Task1
+
+## Acceptance Scenarios
+- Given:
+- When:
+- Then:
+
+## Done Criteria
+Feature works as defined above.
