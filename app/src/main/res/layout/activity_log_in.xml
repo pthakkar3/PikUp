@@ -53,4 +53,14 @@
         android:onClick="cancelLogIn"
         android:text="Back"/>
 
+    <Button
+        android:id="@+id/forgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/loginButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:onClick="forgotPassword"
+        android:text="Forgot Password" />
+
 </RelativeLayout>

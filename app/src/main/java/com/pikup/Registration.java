@@ -55,13 +55,27 @@ public class Registration extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        final FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null && user.isEmailVerified()) {
+            Intent intent = new Intent(Registration.this, HomeScreen.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
     public void registerAttempt(View view) {
         EditText nameEdit = (EditText) findViewById(R.id.enterNameRegister);
         EditText emailEdit = (EditText) findViewById(R.id.enterEmailRegister);
         EditText passwordEdit = (EditText) findViewById(R.id.enterPasswordRegister);
+
         String name = nameEdit.getText().toString();
         String email = emailEdit.getText().toString();
         String password = passwordEdit.getText().toString();
+
+
         if (name.matches("") || email.matches("") || password.matches("")) {
             Toast.makeText(this, "There shouldn't be any empty fields!", Toast.LENGTH_SHORT).show();
         } else if (!(email.substring(email.lastIndexOf('@') + 1).equals("gatech.edu"))) {
@@ -69,11 +83,23 @@ public class Registration extends AppCompatActivity {
         } else if (password.length() < 6) {
             Toast.makeText(this, "Your password must be at least 6 characters long!", Toast.LENGTH_SHORT).show();
         } else {
+            // TODO: Create user and then verify?
+            // TODO: Create view that asks person to check their email for verification, or cancel.
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            Log.d(TAG, task.getResult().toString());
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                            if (task.isSuccessful()) {
+                                // TODO: Fix this!
+                                Log.d(TAG, "Successful registration");
+                                sendEmail();
+                            } else {
+                                Toast.makeText(Registration.this, "Firebase Authentification failed"
+                                        , Toast.LENGTH_SHORT).show();
+                            }
+                            /* commented out poo-poo code
                             if (!task.isSuccessful()) {
                                 Toast.makeText(Registration.this, "Firebase Authentification failed",
                                         Toast.LENGTH_SHORT).show();
@@ -82,8 +108,15 @@ public class Registration extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             }
+                            */
                         }
                     });
+
+
+            // TODO: Display the wait for verification screen
+            //       Once properly verified go to the Home screen
+            // TODO: Delete the user after a certain amount of time if the email is not verified
+
         }
     }
 
@@ -91,5 +124,35 @@ public class Registration extends AppCompatActivity {
         Intent intent = new Intent(this, WelcomeScreen.class);
         startActivity(intent);
         finish();
+    }
+
+    /**
+     * sends the email once a user is created
+     */
+    private void sendEmail() {
+        final FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) { return; }
+        user.sendEmailVerification().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(Registration.this,
+                            "Verification email sent to " + user.getEmail(),
+                            Toast.LENGTH_SHORT).show();
+
+                    /*
+                    Intent intent = new Intent(Registration.this, VerifyEmail.class);
+
+                    startActivity(intent);
+                    finish();
+                    */
+                } else {
+                    Log.e(TAG, "sendEmailVerification", task.getException());
+                    Toast.makeText(Registration.this,
+                            "Failed to send verification email",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

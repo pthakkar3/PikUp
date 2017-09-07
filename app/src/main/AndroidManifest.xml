@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".LogIn" />
         <activity android:name=".Registration" />
-        <activity android:name=".HomeScreen"></activity>
+        <activity android:name=".HomeScreen" />
+        <activity android:name=".VerifyEmail"></activity>
     </application>
 
 </manifest>

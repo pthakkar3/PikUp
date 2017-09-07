@@ -85,4 +85,9 @@ public class LogIn extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void forgotPassword(View view) {
+        // Goto different screen to send in the password to?
+
+    }
 }
