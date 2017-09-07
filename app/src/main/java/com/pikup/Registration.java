@@ -89,7 +89,7 @@ public class Registration extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d(TAG, task.getResult().toString());
+                            // Log.d(TAG, task.getResult().toString());
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
                             if (task.isSuccessful()) {
                                 // TODO: Fix this!
