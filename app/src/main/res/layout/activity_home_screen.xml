@@ -31,4 +31,15 @@
         android:layout_marginTop="30dp"
         android:onClick="logOut"
         android:text="Log Out"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/userProfileHome"
+        android:layout_below="@+id/logOutHome"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:onClick="viewProfile"
+        android:text="User Profile"/>
+
 </RelativeLayout>
