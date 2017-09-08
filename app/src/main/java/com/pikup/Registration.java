@@ -1,8 +1,6 @@
 package com.pikup;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,9 +15,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import static android.R.attr.name;
 
 public class Registration extends AppCompatActivity {
@@ -27,35 +22,6 @@ public class Registration extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "EmailPassword";
-
-    /*
-    TimerTask scanTask;
-    final Handler handler = new Handler();
-    Timer t = new Timer();
-
-    public void pingForVerifiedEmail(){
-        scanTask = new TimerTask() {
-            public void run() {
-
-                handler.post(new Runnable() {
-                    public void run() {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        //wifiManager.scan(context);
-                        if (user != null) {
-                            if (user.isEmailVerified()) {
-                                showHomeScreen();
-                            }
-                        }
-                        Log.d("Firebase", "Continuously checking Firebase to see if email is verified");
-                    }
-                });
-            }};
-
-
-        t.schedule(scanTask, 1000, 3000000);
-
-    }
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +39,6 @@ public class Registration extends AppCompatActivity {
                 }
             }
         };
-        // pingForVerifiedEmail();
     }
 
     @Override
@@ -110,6 +75,7 @@ public class Registration extends AppCompatActivity {
         String email = emailEdit.getText().toString();
         String password = passwordEdit.getText().toString();
 
+
         if (name.matches("") || email.matches("") || password.matches("")) {
             Toast.makeText(this, "There shouldn't be any empty fields!", Toast.LENGTH_SHORT).show();
         } else if (!(email.substring(email.lastIndexOf('@') + 1).equals("gatech.edu"))) {
@@ -123,7 +89,7 @@ public class Registration extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            // Log.d(TAG, task.getResult().toString());
+                            Log.d(TAG, task.getResult().toString());
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
                             if (task.isSuccessful()) {
                                 // TODO: Fix this!
@@ -160,14 +126,6 @@ public class Registration extends AppCompatActivity {
         finish();
     }
 
-    /*
-    public void showHomeScreen() {
-        Intent intent = new Intent(this, HomeScreen.class);
-        startActivity(intent);
-        finish();
-    }
-    */
-
     /**
      * sends the email once a user is created
      */
@@ -182,12 +140,12 @@ public class Registration extends AppCompatActivity {
                             "Verification email sent to " + user.getEmail(),
                             Toast.LENGTH_SHORT).show();
 
-
-                    Intent intent = new Intent(Registration.this, WelcomeScreen.class);
+                    /*
+                    Intent intent = new Intent(Registration.this, VerifyEmail.class);
 
                     startActivity(intent);
                     finish();
-
+                    */
                 } else {
                     Log.e(TAG, "sendEmailVerification", task.getException());
                     Toast.makeText(Registration.this,
