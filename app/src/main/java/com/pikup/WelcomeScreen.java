@@ -24,4 +24,5 @@ public class WelcomeScreen extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
 }
