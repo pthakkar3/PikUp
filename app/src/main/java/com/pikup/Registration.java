@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
 import static android.R.attr.name;
@@ -89,13 +90,16 @@ public class Registration extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d(TAG, task.getResult().toString());
+                            //Log.d(TAG, task.getResult().toString());
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
                             if (task.isSuccessful()) {
                                 // TODO: Fix this!
                                 Log.d(TAG, "Successful registration");
                                 sendEmail();
                             } else {
+                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                    Toast.makeText(Registration.this, "This email account is already registered!", Toast.LENGTH_SHORT).show();
+                                }
                                 Toast.makeText(Registration.this, "Firebase Authentification failed"
                                         , Toast.LENGTH_SHORT).show();
                             }
@@ -131,6 +135,7 @@ public class Registration extends AppCompatActivity {
      */
     private void sendEmail() {
         final FirebaseUser user = mAuth.getCurrentUser();
+        // TODO: Display Error
         if (user == null) { return; }
         user.sendEmailVerification().addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override

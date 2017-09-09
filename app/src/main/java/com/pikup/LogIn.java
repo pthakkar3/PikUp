@@ -65,15 +65,20 @@ public class LogIn extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            FirebaseUser user = mAuth.getCurrentUser();
                             Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
                             if (!task.isSuccessful()) {
                                 Log.w(TAG, "signInWithEmail:failed", task.getException());
                                 Toast.makeText(LogIn.this, "Incorrect Email Address or Password entered!",
                                         Toast.LENGTH_SHORT).show();
-                            } else {
+                            } else if (user != null && user.isEmailVerified()) {
                                 Intent intent = new Intent(LogIn.this, HomeScreen.class);
                                 startActivity(intent);
                                 finish();
+                            } else {
+                                Toast.makeText(LogIn.this, "Email not verified. We'll resend a verification email now.",
+                                        Toast.LENGTH_SHORT).show();
+                                sendEmail();
                             }
                         }
                     });
@@ -91,5 +96,33 @@ public class LogIn extends AppCompatActivity {
         Intent intent = new Intent(this, ForgotPassword.class);
         startActivity(intent);
         finish();
+    }
+
+    private void sendEmail() {
+        final FirebaseUser user = mAuth.getCurrentUser();
+        // TODO: Display Error
+        if (user == null) { return; }
+        user.sendEmailVerification().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(LogIn.this,
+                            "Verification email sent to " + user.getEmail(),
+                            Toast.LENGTH_SHORT).show();
+
+                    /*
+                    Intent intent = new Intent(Registration.this, VerifyEmail.class);
+
+                    startActivity(intent);
+                    finish();
+                    */
+                } else {
+                    Log.e(TAG, "sendEmailVerification", task.getException());
+                    Toast.makeText(LogIn.this,
+                            "Failed to send verification email",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
