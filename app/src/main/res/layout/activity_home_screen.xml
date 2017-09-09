@@ -11,7 +11,8 @@
         android:textSize="40sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="Home Screen"/>
+        android:text="Home Screen"
+        android:id="@+id/textView3" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -26,20 +27,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/logOutHome"
-        android:layout_below="@+id/toBe"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:backgroundTint="@android:color/white"
         android:onClick="logOut"
-        android:text="Log Out"/>
+        android:text="Log Out"
+        android:layout_marginBottom="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/userProfileHome"
-        android:layout_below="@+id/logOutHome"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="48dp"
         android:onClick="viewProfile"
-        android:text="User Profile"/>
+        android:backgroundTint="@android:color/white"
+        android:text="User Profile"
+        android:layout_below="@+id/textView3"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

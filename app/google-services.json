@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "26734978497",
+    "firebase_url": "https://pikup-e61f2.firebaseio.com",
+    "project_id": "pikup-e61f2",
+    "storage_bucket": "pikup-e61f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26734978497:android:f5a773102f0d704b",
+        "android_client_info": {
+          "package_name": "com.pikup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "26734978497-vd95jbe7vhqgevo90qbe4jdqrvkrp8m3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pikup",
+            "certificate_hash": "0d7f59e5b3ef5c9dc698262e181684d9cd6142d7"
+          }
+        },
+        {
+          "client_id": "26734978497-fquruedf1hspj18b5ialgrr9j9b6e104.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYowx5jx9_WYIA9IMO_3XeHIghSkuGkMU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "26734978497-fquruedf1hspj18b5ialgrr9j9b6e104.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
