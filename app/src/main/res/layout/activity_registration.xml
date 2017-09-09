@@ -23,7 +23,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:maxLines = "1" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -35,7 +36,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:maxLines = "1" />
 
     <EditText
         android:id="@+id/enterPasswordRegister"
@@ -48,7 +50,8 @@
         android:inputType="textPassword"
         android:textAllCaps="false"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:maxLines = "1" />
 
     <Button
         android:id="@+id/registerButton"
@@ -61,6 +64,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/enterPasswordRegister"
         android:layout_marginTop="10dp"
+        android:background="#ff3f9c"
         android:onClick="registerAttempt"
         android:text="Register" />
 

@@ -6,13 +6,14 @@
     tools:context="com.pikup.HomeScreen">
 
     <TextView
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="40sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:text="Home Screen"
-        android:id="@+id/textView3" />
+        android:textSize="40sp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"

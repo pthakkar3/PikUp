@@ -30,7 +30,6 @@
 
     <EditText
         android:id="@+id/enterPasswordLogin"
-        android:maxLines = "1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -39,21 +38,23 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/enterEmailLogin"
         android:hint="Password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:maxLines="1" />
 
     <Button
         android:id="@+id/loginButton"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/enterPasswordLogin"
         android:layout_marginTop="11dp"
+        android:background="#ff3f9c"
         android:onClick="logInAttempt"
-        android:text="Log In" />
+        android:text="Log In"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:id="@+id/cancelLogin"
@@ -78,6 +79,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="34dp"
         android:onClick="forgotPassword"
-        android:text="Forgot Your Password?" />
+        android:text="Forgot Your Password?"
+        android:textColor="#ff3f9c" />
 
 </RelativeLayout>
