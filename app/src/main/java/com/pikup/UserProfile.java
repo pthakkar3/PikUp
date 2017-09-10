@@ -1,5 +1,6 @@
 package com.pikup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.provider.MediaStore;
@@ -108,6 +109,12 @@ public class UserProfile extends AppCompatActivity {
 
         userRef.setValue(currentUser);
 
+    }
+
+    public void profileOnBack(View view) {
+        Intent intent = new Intent(this, HomeScreen.class);
+        startActivity(intent);
+        finish();
     }
 
 }
