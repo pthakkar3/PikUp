@@ -19,6 +19,7 @@
         <activity android:name=".LogIn" />
         <activity android:name=".Registration" />
         <activity android:name=".HomeScreen" />
+        <activity android:name=".UserProfile" />
         <activity android:name=".ForgotPassword"></activity>
     </application>
 
