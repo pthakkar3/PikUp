@@ -1,4 +1,4 @@
-package com.pikup;
+package com.pikup.model;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

@@ -1,4 +1,4 @@
-package com.pikup;
+package com.pikup.ui;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -15,10 +15,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.pikup.R;
 
-import static android.R.attr.name;
-
-public class Registration extends AppCompatActivity {
+public class RegistrationActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -61,7 +60,7 @@ public class Registration extends AppCompatActivity {
         super.onResume();
         final FirebaseUser user = mAuth.getCurrentUser();
         if (user != null && user.isEmailVerified()) {
-            Intent intent = new Intent(Registration.this, HomeScreen.class);
+            Intent intent = new Intent(RegistrationActivity.this, HomeScreenActivity.class);
             startActivity(intent);
             finish();
         }
@@ -98,17 +97,17 @@ public class Registration extends AppCompatActivity {
                                 sendEmail();
                             } else {
                                 if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                    Toast.makeText(Registration.this, "This email account is already registered!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegistrationActivity.this, "This email account is already registered!", Toast.LENGTH_SHORT).show();
                                 }
-                                Toast.makeText(Registration.this, "Firebase Authentification failed"
+                                Toast.makeText(RegistrationActivity.this, "Firebase Authentification failed"
                                         , Toast.LENGTH_SHORT).show();
                             }
                             /* commented out poo-poo code
                             if (!task.isSuccessful()) {
-                                Toast.makeText(Registration.this, "Firebase Authentification failed",
+                                Toast.makeText(RegistrationActivity.this, "Firebase Authentification failed",
                                         Toast.LENGTH_SHORT).show();
                             } else {
-                                Intent intent = new Intent(Registration.this, HomeScreen.class);
+                                Intent intent = new Intent(RegistrationActivity.this, HomeScreenActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
@@ -125,7 +124,7 @@ public class Registration extends AppCompatActivity {
     }
 
     public void cancelRegister(View view) {
-        Intent intent = new Intent(this, WelcomeScreen.class);
+        Intent intent = new Intent(this, WelcomeScreenActivity.class);
         startActivity(intent);
         finish();
     }
@@ -141,19 +140,19 @@ public class Registration extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(Registration.this,
+                    Toast.makeText(RegistrationActivity.this,
                             "Verification email sent to " + user.getEmail(),
                             Toast.LENGTH_SHORT).show();
 
                     /*
-                    Intent intent = new Intent(Registration.this, VerifyEmail.class);
+                    Intent intent = new Intent(RegistrationActivity.this, VerifyEmail.class);
 
                     startActivity(intent);
                     finish();
                     */
                 } else {
                     Log.e(TAG, "sendEmailVerification", task.getException());
-                    Toast.makeText(Registration.this,
+                    Toast.makeText(RegistrationActivity.this,
                             "Failed to send verification email",
                             Toast.LENGTH_SHORT).show();
                 }

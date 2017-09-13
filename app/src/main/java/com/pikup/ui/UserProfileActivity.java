@@ -1,27 +1,26 @@
-package com.pikup;
+package com.pikup.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.pikup.R;
+import com.pikup.model.User;
 
 /**
  * Created by Altan on 9/7/2017.
  */
 
-public class UserProfile extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -112,7 +111,7 @@ public class UserProfile extends AppCompatActivity {
     }
 
     public void profileOnBack(View view) {
-        Intent intent = new Intent(this, HomeScreen.class);
+        Intent intent = new Intent(this, HomeScreenActivity.class);
         startActivity(intent);
         finish();
     }

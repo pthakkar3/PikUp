@@ -1,4 +1,4 @@
-package com.pikup;
+package com.pikup.ui;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -12,8 +12,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.pikup.R;
 
-public class ForgotPassword extends AppCompatActivity {
+public class ForgotPasswordActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
@@ -37,7 +38,7 @@ public class ForgotPassword extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Log.d("LOG:", "Email sent.");
-                                Toast.makeText(ForgotPassword.this, "Reset Email Sent! Check your Inbox!",
+                                Toast.makeText(ForgotPasswordActivity.this, "Reset Email Sent! Check your Inbox!",
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -46,7 +47,7 @@ public class ForgotPassword extends AppCompatActivity {
     }
 
     public void goBack(View view) {
-        Intent intent = new Intent(ForgotPassword.this, LogIn.class);
+        Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
     }

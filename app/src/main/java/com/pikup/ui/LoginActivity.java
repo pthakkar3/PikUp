@@ -1,4 +1,4 @@
-package com.pikup;
+package com.pikup.ui;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -14,8 +14,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.pikup.R;
 
-public class LogIn extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -69,14 +70,14 @@ public class LogIn extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
                             if (!task.isSuccessful()) {
                                 Log.w(TAG, "signInWithEmail:failed", task.getException());
-                                Toast.makeText(LogIn.this, "Incorrect Email Address or Password entered!",
+                                Toast.makeText(LoginActivity.this, "Incorrect Email Address or Password entered!",
                                         Toast.LENGTH_SHORT).show();
                             } else if (user != null && user.isEmailVerified()) {
-                                Intent intent = new Intent(LogIn.this, HomeScreen.class);
+                                Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
                                 startActivity(intent);
                                 finish();
                             } else {
-                                Toast.makeText(LogIn.this, "Email not verified. We'll resend a verification email now.",
+                                Toast.makeText(LoginActivity.this, "Email not verified. We'll resend a verification email now.",
                                         Toast.LENGTH_SHORT).show();
                                 sendEmail();
                             }
@@ -86,14 +87,14 @@ public class LogIn extends AppCompatActivity {
     }
 
     public void cancelLogIn(View view) {
-        Intent intent = new Intent(this, WelcomeScreen.class);
+        Intent intent = new Intent(this, WelcomeScreenActivity.class);
         startActivity(intent);
         finish();
     }
 
     public void forgotPassword(View view) {
         // Goto different screen to send in the password to?
-        Intent intent = new Intent(this, ForgotPassword.class);
+        Intent intent = new Intent(this, ForgotPasswordActivity.class);
         startActivity(intent);
         finish();
     }
@@ -106,19 +107,19 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(LogIn.this,
+                    Toast.makeText(LoginActivity.this,
                             "Verification email sent to " + user.getEmail(),
                             Toast.LENGTH_SHORT).show();
 
                     /*
-                    Intent intent = new Intent(Registration.this, VerifyEmail.class);
+                    Intent intent = new Intent(RegistrationActivity.this, VerifyEmail.class);
 
                     startActivity(intent);
                     finish();
                     */
                 } else {
                     Log.e(TAG, "sendEmailVerification", task.getException());
-                    Toast.makeText(LogIn.this,
+                    Toast.makeText(LoginActivity.this,
                             "Failed to send verification email",
                             Toast.LENGTH_SHORT).show();
                 }

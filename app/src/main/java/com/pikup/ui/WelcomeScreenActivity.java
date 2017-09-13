@@ -1,11 +1,15 @@
-package com.pikup;
+package com.pikup.ui;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class WelcomeScreen extends AppCompatActivity {
+import com.pikup.R;
+import com.pikup.ui.LoginActivity;
+import com.pikup.ui.RegistrationActivity;
+
+public class WelcomeScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,13 +18,13 @@ public class WelcomeScreen extends AppCompatActivity {
     }
 
     public void pressLogInWelcome(View view) {
-        Intent intent = new Intent(this, LogIn.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }
 
     public void pressRegisterWelcome(View view) {
-        Intent intent = new Intent(this, Registration.class);
+        Intent intent = new Intent(this, RegistrationActivity.class);
         startActivity(intent);
         finish();
     }

@@ -1,4 +1,4 @@
-package com.pikup;
+package com.pikup.ui;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,8 +7,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.pikup.R;
 
-public class HomeScreen extends AppCompatActivity {
+public class HomeScreenActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
@@ -24,13 +25,13 @@ public class HomeScreen extends AppCompatActivity {
     }
 
     public void viewProfile(View view) {
-        Intent intent = new Intent(this, UserProfile.class);
+        Intent intent = new Intent(this, UserProfileActivity.class);
         startActivity(intent);
         finish();
     }
     public void logOut(View view) {
         FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(this, WelcomeScreen.class);
+        Intent intent = new Intent(this, WelcomeScreenActivity.class);
         startActivity(intent);
         finish();
     }
