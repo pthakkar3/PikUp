@@ -35,4 +35,10 @@ public class HomeScreenActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void hostGame(View view) {
+        Intent intent = new Intent(this, HostActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

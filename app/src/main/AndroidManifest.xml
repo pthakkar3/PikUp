@@ -20,7 +20,8 @@
         <activity android:name=".ui.RegistrationActivity" />
         <activity android:name=".ui.HomeScreenActivity" />
         <activity android:name=".ui.UserProfileActivity" />
-        <activity android:name=".ui.ForgotPasswordActivity"></activity>
+        <activity android:name=".ui.ForgotPasswordActivity" />
+        <activity android:name=".ui.HostActivity"></activity>
     </application>
 
 </manifest>

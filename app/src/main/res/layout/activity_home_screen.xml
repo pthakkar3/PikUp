@@ -5,8 +5,32 @@
     android:layout_height="match_parent"
     tools:context="com.pikup.ui.HomeScreenActivity">
 
+    <Button
+        android:id="@+id/joinGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:backgroundTint="@android:color/white"
+        android:onClick="viewProfile"
+        android:text="Join Game"
+        android:layout_below="@+id/hostGame"
+        android:layout_alignLeft="@+id/logOutHome"
+        android:layout_alignStart="@+id/logOutHome" />
+
+    <Button
+        android:id="@+id/hostGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/joinGame"
+        android:layout_alignRight="@+id/joinGame"
+        android:layout_below="@+id/userProfileHome"
+        android:layout_marginTop="34dp"
+        android:backgroundTint="@android:color/white"
+        android:onClick="hostGame"
+        android:text="Host Game" />
+
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/toBe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -14,15 +38,6 @@
         android:text="Home Screen"
         android:textSize="40sp"
         android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textSize="30sp"
-        android:id="@+id/toBe"
-        android:text="To be implemented.."/>
 
     <Button
         android:layout_width="wrap_content"
@@ -43,7 +58,7 @@
         android:onClick="viewProfile"
         android:backgroundTint="@android:color/white"
         android:text="User Profile"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/toBe"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
