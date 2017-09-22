@@ -72,11 +72,12 @@
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/sportSpinner"
                         android:layout_weight="1"
                         android:text="Location"
                         android:textAlignment="center"
-                        android:textSize="18dp" />
+                        android:textSize="18dp"
+                        android:layout_toLeftOf="@+id/locationSpinner"
+                        android:layout_toStartOf="@+id/locationSpinner" />
 
                     <Spinner
                         android:id="@+id/locationSpinner"
