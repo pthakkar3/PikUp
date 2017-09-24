@@ -9,15 +9,15 @@ import java.util.Date;
 
 public class Game {
 
-    String sport;
-    Date timeOfGame;
-    String locationTitle;
-    double locationLatitude;
-    double locationLongitude;
-    String intensity;
-    String gameStatus;
-    String hostUID;
-    ArrayList<String> playerUIDList;
+    private String sport;
+    private Date timeOfGame;
+    private String locationTitle;
+    private double locationLatitude;
+    private double locationLongitude;
+    private String intensity;
+    private String gameStatus;
+    private String hostUID;
+    private ArrayList<String> playerUIDList;
 
     public Game(String sport, Date timeOfGame, String locationTitle, double locationLatitude, double locationLongitude, String intensity, String gameStatus, String hostUID, ArrayList<String> playerUIDList) {
         this.sport = sport;
