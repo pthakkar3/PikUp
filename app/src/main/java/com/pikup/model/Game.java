@@ -2,6 +2,7 @@ package com.pikup.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Altan on 9/24/2017.
@@ -14,17 +15,32 @@ public class Game {
     private String locationTitle;
     private double locationLatitude;
     private double locationLongitude;
-    private String intensity;
+    private int capacity;
+    private int intensity;
     private String gameStatus;
     private String hostUID;
-    private ArrayList<String> playerUIDList;
+    private List<String> playerUIDList;
 
-    public Game(String sport, Date timeOfGame, String locationTitle, double locationLatitude, double locationLongitude, String intensity, String gameStatus, String hostUID, ArrayList<String> playerUIDList) {
+    public Game() {
+        this.sport = "";
+        this.timeOfGame = new Date();
+        this.locationTitle = "";
+        this.locationLatitude = 0;
+        this.locationLongitude = 0;
+        this.capacity = 0;
+        this.intensity = 0;
+        this.gameStatus = "";
+        this.hostUID = "";
+        this.playerUIDList = new ArrayList<>();
+    }
+
+    public Game(String sport, Date timeOfGame, String locationTitle, double locationLatitude, double locationLongitude, int capacity ,int intensity, String gameStatus, String hostUID, ArrayList<String> playerUIDList) {
         this.sport = sport;
         this.timeOfGame = timeOfGame;
         this.locationTitle = locationTitle;
         this.locationLatitude = locationLatitude;
         this.locationLongitude = locationLongitude;
+        this.capacity = capacity;
         this.intensity = intensity;
         this.gameStatus = gameStatus;
         this.hostUID = hostUID;
@@ -71,11 +87,15 @@ public class Game {
         this.locationLongitude = locationLongitude;
     }
 
-    public String getIntensity() {
+    public int getCapacity() { return capacity; }
+
+    public void setCapacity(int capacity) { this.capacity = capacity; }
+
+    public int getIntensity() {
         return intensity;
     }
 
-    public void setIntensity(String intensity) {
+    public void setIntensity(int intensity) {
         this.intensity = intensity;
     }
 
@@ -95,7 +115,7 @@ public class Game {
         this.hostUID = hostUID;
     }
 
-    public ArrayList<String> getPlayerUIDList() {
+    public List<String> getPlayerUIDList() {
         return playerUIDList;
     }
 
