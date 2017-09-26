@@ -1,5 +1,9 @@
 package com.pikup.ui;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
@@ -28,6 +32,7 @@ import com.pikup.model.Sports;
 import com.pikup.model.SportsLocations;
 import com.pikup.model.User;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +54,7 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner sportSpinner;
     private String sportSelected;
     private String locationSelected;
+    static java.util.Calendar cal = java.util.Calendar.getInstance();
 
     private final String sportsListURL = "sportsList/";
     private final String locationListURL = "sportsList/locations/";
@@ -63,8 +69,9 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        timePicker = (TimePicker) findViewById(R.id.timePicker);
-        datePicker = (DatePicker) findViewById(R.id.datePicker);
+        //timePicker = (TimePicker) findViewById(R.id.timePicker);
+        //datePicker = (DatePicker) findViewById(R.id.datePicker);
+
 
         sportsLocationsList = new ArrayList<>();
         sportsList = new ArrayList<>();
@@ -198,7 +205,9 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         newGame.setHostUID(mAuth.getCurrentUser().getUid());
         newGame.setSport(sportSelected);
         newGame.setLocationTitle(locationSelected);
-        newGame.setTimeOfGame(new Date(System.currentTimeMillis()));
+        // storing the date from Calendar object
+        // MONTH IS STORED FROM 0-11, ADD 1 WHEN CALLED FROM DATABASE
+        newGame.setTimeOfGame(cal.getTime());
 
         currentRef = mDatabase.child("gamesList");
         currentRef.push().setValue(newGame);
@@ -249,6 +258,59 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+//            final java.util.Calendar c = java.util.Calendar.getInstance();
+//            int hour = c.get(java.util.Calendar.HOUR_OF_DAY);
+//            int minute = c.get(java.util.Calendar.MINUTE);
+            int hour = HostActivity.cal.get(java.util.Calendar.HOUR_OF_DAY);
+            int minute = HostActivity.cal.get(java.util.Calendar.MINUTE);
+
+            return new TimePickerDialog(getActivity(), this, hour, minute, android.text.format.DateFormat.is24HourFormat(getActivity()));
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            HostActivity.cal.set(java.util.Calendar.HOUR_OF_DAY, hourOfDay);
+            HostActivity.cal.set(java.util.Calendar.MINUTE, minute);
+            HostActivity.cal.set(java.util.Calendar.SECOND, 0);
+            HostActivity.cal.set(java.util.Calendar.MILLISECOND, 0);
+        }
+    }
+
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+//            final java.util.Calendar c = java.util.Calendar.getInstance();
+//            int hour = c.get(java.util.Calendar.HOUR_OF_DAY);
+//            int minute = c.get(java.util.Calendar.MINUTE);
+            int year = HostActivity.cal.get(java.util.Calendar.YEAR);
+            int month = HostActivity.cal.get(java.util.Calendar.MONTH);
+            int day = HostActivity.cal.get(java.util.Calendar.DAY_OF_MONTH);
+
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            HostActivity.cal.set(java.util.Calendar.YEAR, year);
+            HostActivity.cal.set(java.util.Calendar.MONTH, month);
+            HostActivity.cal.set(java.util.Calendar.DAY_OF_MONTH, dayOfMonth);
+        }
+    }
+
+    public void showTimePicker(View v) {
+        DialogFragment fragment = new TimePickerFragment();
+        fragment.show(getFragmentManager(), "timePicker");
+    }
+
+    public void showDatePicker(View v) {
+        DialogFragment fragment = new DatePickerFragment();
+        fragment.show(getFragmentManager(), "datePicker");
+    }
 
 }
 
