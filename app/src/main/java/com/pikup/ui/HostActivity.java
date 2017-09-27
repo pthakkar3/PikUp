@@ -15,7 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
@@ -55,6 +57,8 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
     private String sportSelected;
     private String locationSelected;
     static java.util.Calendar cal = java.util.Calendar.getInstance();
+    private RatingBar intensity;
+    private NumberPicker numberOfPlayers;
 
     private final String sportsListURL = "sportsList/";
     private final String locationListURL = "sportsList/locations/";
@@ -77,6 +81,10 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         sportsList = new ArrayList<>();
 
         locationSpinner = (Spinner) findViewById(R.id.locationSpinner);
+        intensity = (RatingBar) findViewById(R.id.intensityBar);
+        numberOfPlayers = (NumberPicker) findViewById(R.id.numberOfPlayers);
+        numberOfPlayers.setMinValue(0);
+        numberOfPlayers.setMaxValue(30);
 
         // TODO: Remove temp code
         sportsList.add("Basketball");
@@ -205,6 +213,12 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         newGame.setHostUID(mAuth.getCurrentUser().getUid());
         newGame.setSport(sportSelected);
         newGame.setLocationTitle(locationSelected);
+        if (intensity.getRating() > 0) {
+            newGame.setIntensity((int) intensity.getRating());
+        }
+        if (numberOfPlayers.getValue() > 0) {
+            newGame.setCapacity(numberOfPlayers.getValue());
+        }
         // storing the date from Calendar object
         // MONTH IS STORED FROM 0-11, ADD 1 WHEN CALLED FROM DATABASE
         newGame.setTimeOfGame(cal.getTime());
