@@ -20,6 +20,7 @@ import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -47,9 +48,10 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
     private DatabaseReference currentRef;
     private static final String TAG = "Game";
 
-    private static List<String> sportsList;
-    private static List<SportsLocations> sportsLocationsList;
-    private List<Game> gamesList;
+    private List<String> sportsList;
+    private List<SportsLocations> sportsLocationsList;
+    private ArrayAdapter<String> sportsLocationsAdapter;
+
     private TimePicker timePicker;
     private DatePicker datePicker;
     private Spinner locationSpinner;
@@ -69,7 +71,6 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_host);
 
-        gamesList = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -86,7 +87,7 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         numberOfPlayers.setMinValue(0);
         numberOfPlayers.setMaxValue(30);
 
-        // TODO: Remove temp code
+        /*
         sportsList.add("Basketball");
         sportsList.add("Football");
         sportsList.add("Soccer");
@@ -127,73 +128,36 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         sportsLocationsList.add(new SportsLocations("Ultimate Frisbee", lFrisbee));
         sportsLocationsList.add(new SportsLocations("Tennis", lTennis));
         // =========================== Please contact me at 867-5309
-
+        */
 
         // Populate the sports and location spinners from the database
         // Create a database reference to the gameList folder
 
-        // TODO: Get Sports List and Locations List from the Database
+        // Get Sports List and Locations List from the Database
         try {
-            /*
             currentRef = mDatabase.child(sportsListURL);
-
             currentRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Sports listOfSports = dataSnapshot.getValue(Sports.class);
-                    try { // why is my IDE always yelling at me????
-                        sportsList = listOfSports.getSports();
-                        //for (String s: sportsList) {
-                        //    Log.i(TAG, s);
-                        //}
-                    } catch (NullPointerException ex) {
-                        Log.e(TAG, "List of sports retrieved from the database was null "
-                                + ex.toString());
+                    for (DataSnapshot snapshotChunk: dataSnapshot.getChildren()) {
+                        HostActivity.this.sportsLocationsList.add(snapshotChunk.getValue(SportsLocations.class));
                     }
-                    for (String sport: sportsList) {
-                        Log.i(TAG, locationListURL + sport);
-                        DatabaseReference sportRef = mDatabase.child(locationListURL + sport);
 
-                        sportRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                SportsLocations a = dataSnapshot.getValue(SportsLocations.class);
-                                Log.i(TAG, a.toString());
-                                for (String s: a.getLocations()) {
-                                    Log.i(TAG, s);
-                                }
-                                sportsLocationsList.add(a);
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                    for (SportsLocations s: sportsLocationsList) {
+                        sportsList.add(s.getGame());
                     }
+                    attachListenerToSpinner();
+
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    Log.e(TAG, databaseError.getMessage());
                 }
-            }); */
-
-            // Populate the Sports dropdown with the Sports pulled from the database
-            sportSpinner = (Spinner) findViewById(R.id.sportSpinner);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                    this, android.R.layout.simple_spinner_item, sportsList);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            sportSpinner.setAdapter(adapter);
-
-            // adds listener so that on ItemSelected is called
-            sportSpinner.setOnItemSelectedListener(this);
-            locationSpinner.setOnItemSelectedListener(this);
-
-            // Populate the Locations on condition of what sport is selected.
+            });
 
         } catch (NullPointerException ex) {
-            Log.e(TAG, "user retrieved form database was null");
+            Log.e(TAG, "database reference retrieved was null");
             Intent intent = new Intent(this, HomeScreenActivity.class);
             startActivity(intent);
             finish();
@@ -201,14 +165,29 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    private void attachListenerToSpinner() {
+        Log.i(TAG, "Current Size of sportsLocationList: " + sportsLocationsList.size());
+        Log.i(TAG, "Current Size of sportsList: " + sportsList.size());
+        // Populate the Sports dropdown with the Sports pulled from the database
+        sportSpinner = (Spinner) findViewById(R.id.sportSpinner);
+        ArrayAdapter<String> sportsAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, sportsList);
+        sportsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sportSpinner.setAdapter(sportsAdapter);
+
+        // Add an adapter for locations spinner, put garbage data for now
+        //sportsLocationsAdapter = new ArrayAdapter<>(
+        //        this, android.R.layout.simple_spinner_item, sportsLocationsList);
+
+        // adds listener so that on ItemSelected is called
+        sportSpinner.setOnItemSelectedListener(this);
+        locationSpinner.setOnItemSelectedListener(this);
+
+    }
+
 
 
     public void hostNewGame(View view) {
-        // gameRef.setValue()
-        Log.i(TAG, sportSelected);
-        Log.i(TAG, locationSelected);
-
-        // Game newGame = new Game("sport", Date, "locationTitle", lat, longi, capacity, intentisty, status, hostUID, playerList)
         Game newGame = new Game();
         newGame.setHostUID(mAuth.getCurrentUser().getUid());
         newGame.setSport(sportSelected);
@@ -221,15 +200,19 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         // storing the date from Calendar object
         // MONTH IS STORED FROM 0-11, ADD 1 WHEN CALLED FROM DATABASE
+        // WHY NOT JUST ADD 1 HERE DUDE
         newGame.setTimeOfGame(cal.getTime());
 
         currentRef = mDatabase.child("gamesList");
         currentRef.push().setValue(newGame);
 
+        Toast.makeText(HostActivity.this,
+                "Your game was hosted!",
+                Toast.LENGTH_SHORT).show();
+
         Intent intent = new Intent(this, HomeScreenActivity.class);
         startActivity(intent);
         finish();
-
     }
 
     public void cancelGame(View view) {
@@ -245,16 +228,22 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         if (parent.getItemAtPosition(pos) instanceof String
                 && parent.getId() == sportSpinner.getId()) {
             String currentItem = (String) parent.getItemAtPosition(pos);
+            for (String s: sportsList) {
+                Log.i(TAG, "OnItemSelectedSportsList: " + s);
+            }
             Log.i(TAG, (String) parent.getItemAtPosition(pos));
             sportSelected = currentItem;
             for (SportsLocations s: sportsLocationsList) {
+                Log.i(TAG, "iterating through SportsLocation in onItemSelected: " + s.getGame());
                 // SportsLocation equals has been made to accept Strings and SportsLocations
                 if (s.equals(currentItem)) {
-                    // Populate spinner
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    // Populate location spinner based on the sport selected
+                    //ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    //        this, android.R.layout.simple_spinner_item, s.getLocations());
+                    ArrayAdapter<String> sportsLocationsAdapter = new ArrayAdapter<>(
                             this, android.R.layout.simple_spinner_item, s.getLocations());
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    locationSpinner.setAdapter(adapter);
+                    sportsLocationsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    locationSpinner.setAdapter(sportsLocationsAdapter);
                     locationSelected = (String) locationSpinner.getSelectedItem();
                 }
             }
@@ -326,73 +315,65 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         fragment.show(getFragmentManager(), "datePicker");
     }
 
-}
-
-
-/* This code was used to populate the database for the first time
-
-List<String> listOfLocations = new ArrayList<>();
+    /**
+     * Super secret developer code used to populate the database for the first time
+     * Don't call this unless there needs to be changes to the sports / sports location
+     * in the database
+     */
+    public void populateDatabase() {
+            List<String> listOfLocations = new ArrayList<>();
              SportsLocations test;
 
             //currentRef = mDatabase.child("sportsList");
-            currentRef = mDatabase.child("sportsList/locations/Basketball");
+            currentRef = mDatabase.child("sportsList/");
 
 
             listOfLocations.add("CRC 4th floor Courts");
             listOfLocations.add("North Avenue Gym");
             listOfLocations.add("Peters Parking Deck");
             test = new SportsLocations("Basketball", listOfLocations);
-            currentRef.setValue(test);
+            //currentRef.setValue(test);
+            currentRef.push().setValue(test);
 
             // ===========
 
-            currentRef = mDatabase.child("sportsList/locations/Football");
 
             listOfLocations = new ArrayList<>();
             listOfLocations.add("CRC Fields");
             listOfLocations.add("Burger Bowl");
             listOfLocations.add("Tech Green");
             test = new SportsLocations("Football", listOfLocations);
-            currentRef.setValue(test);
-
+             currentRef.push().setValue(test);
             // ===========
 
-            currentRef = mDatabase.child("sportsList/locations/Soccer");
 
             listOfLocations = new ArrayList<>();
             listOfLocations.add("CRC Fields");
             listOfLocations.add("Burger Bowl");
             test = new SportsLocations("Soccer", listOfLocations);
-            currentRef.setValue(test);
-
+        currentRef.push().setValue(test);
             // ===========
 
-            currentRef = mDatabase.child("sportsList/locations/Volleyball");
 
             listOfLocations = new ArrayList<>();
             listOfLocations.add("North Ave Courtyard");
             listOfLocations.add("CRC Fields");
             test = new SportsLocations("Volleyball", listOfLocations);
-            currentRef.setValue(test);
-
+        currentRef.push().setValue(test);
             // ===========
 
-            currentRef = mDatabase.child("sportsList/locations/UltimateFrisbee");
 
             listOfLocations = new ArrayList<>();
             listOfLocations.add("CRC Fields");
             listOfLocations.add("Tech Green");
             test = new SportsLocations("UltimateFrisbee", listOfLocations);
-            currentRef.setValue(test);
-
+        currentRef.push().setValue(test);
             // ===========
 
-            currentRef = mDatabase.child("sportsList/locations/Tennis");
 
             listOfLocations = new ArrayList<>();
             listOfLocations.add("Peters Parking Deck");
             test = new SportsLocations("Tennis", listOfLocations);
-            currentRef.setValue(test);
-
-
- */
+        currentRef.push().setValue(test);
+    }
+}
