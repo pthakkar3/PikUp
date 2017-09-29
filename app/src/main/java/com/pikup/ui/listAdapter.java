@@ -10,30 +10,36 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.pikup.R;
 import com.pikup.model.Game;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Zimin on 2017/9/29.
- */
+
 
 public class listAdapter extends ArrayAdapter<Game> {
     static java.util.Calendar cal = java.util.Calendar.getInstance();
     private Activity context;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private DatabaseReference currentRef;
     private List<Game> gameList;
+    private Game current;
+
+
 
 
     public listAdapter(Activity context, List<Game> gameList) {
         super(context, R.layout.activity_list_layout, gameList);
         this.context = context;
         this.gameList = gameList;
+
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -57,16 +63,29 @@ public class listAdapter extends ArrayAdapter<Game> {
         listDate.setText(dateFormat.format(game.getTimeOfGame()));
         listLocation.setText(game.getLocationTitle());
         listIntensityBar.setRating(game.getIntensity());
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference playerRef = mDatabase.child("gamesList").child(mAuth.getCurrentUser().getUid());
 
-        joinGame.setOnClickListener(new View.OnClickListener() {
+
+
+
+        return listViewItem;
+    }
+
+    public void joinExistedGame(View view) {
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Game game = dataSnapshot.getValue(Game.class);
+                List<String> editedList = game.getPlayerUIDList();
+                editedList.add(mAuth.getCurrentUser().getUid());
+                game.setPlayerUIDList((ArrayList<String>) editedList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
-        return listViewItem;
     }
 }
