@@ -23,14 +23,16 @@ public class JoinListActivity extends AppCompatActivity {;
 
     ListView listViewGame;
     List<Game> gameList;
+    String userUID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_list);
-
+        mAuth = FirebaseAuth.getInstance();
         currentRef = FirebaseDatabase.getInstance().getReference("gamesList");
         listViewGame = (ListView) findViewById(R.id.listViewGame);
-
+        userUID = mAuth.getCurrentUser().getUid();
         gameList = new ArrayList<>();
     }
 
@@ -44,7 +46,9 @@ public class JoinListActivity extends AppCompatActivity {;
                 gameList.clear();
                 for(DataSnapshot gameSnapshot: dataSnapshot.getChildren()) {
                     Game game = gameSnapshot.getValue(Game.class);
-                    gameList.add(game);
+                    if (!userUID.equals(game.getHostUID())) {
+                        gameList.add(game);
+                    }
                 }
                 listAdapter adapter = new listAdapter(JoinListActivity.this, gameList);
                 listViewGame.setAdapter(adapter);

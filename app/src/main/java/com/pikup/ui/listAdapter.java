@@ -10,6 +10,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.pikup.R;
 import com.pikup.model.Game;
 
@@ -23,7 +25,8 @@ import java.util.List;
 public class listAdapter extends ArrayAdapter<Game> {
     static java.util.Calendar cal = java.util.Calendar.getInstance();
     private Activity context;
-    FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
     private List<Game> gameList;
 
 
@@ -37,7 +40,6 @@ public class listAdapter extends ArrayAdapter<Game> {
         mAuth = FirebaseAuth.getInstance();
         LayoutInflater inflater = context.getLayoutInflater();
         View listViewItem = inflater.inflate(R.layout.activity_list_layout, null, true);
-
         TextView listSport = (TextView) listViewItem.findViewById(R.id.listSport);
         TextView listLocation = (TextView) listViewItem.findViewById(R.id.listLocation);
         TextView listTime = (TextView) listViewItem.findViewById(R.id.listTime);
@@ -48,14 +50,17 @@ public class listAdapter extends ArrayAdapter<Game> {
         java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
         java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
         final Game game = gameList.get(position);
+
         cal.setTime(game.getTimeOfGame());
         listSport.setText(game.getSport());
         listTime.setText(timeFormat.format(game.getTimeOfGame()));
         listDate.setText(dateFormat.format(game.getTimeOfGame()));
         listLocation.setText(game.getLocationTitle());
         listIntensityBar.setRating(game.getIntensity());
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference playerRef = mDatabase.child("gamesList").child(mAuth.getCurrentUser().getUid());
+
         joinGame.setOnClickListener(new View.OnClickListener() {
-            
             @Override
             public void onClick(View view) {
 
