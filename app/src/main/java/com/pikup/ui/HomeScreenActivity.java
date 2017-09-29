@@ -41,4 +41,10 @@ public class HomeScreenActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void listGame(View view) {
+        Intent intent = new Intent(this, JoinListActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

@@ -9,13 +9,13 @@
         android:id="@+id/joinGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/logOutHome"
+        android:layout_alignStart="@+id/logOutHome"
+        android:layout_below="@+id/hostGame"
         android:layout_marginTop="42dp"
         android:backgroundTint="@android:color/white"
-        android:onClick="viewProfile"
-        android:text="Join Game"
-        android:layout_below="@+id/hostGame"
-        android:layout_alignLeft="@+id/logOutHome"
-        android:layout_alignStart="@+id/logOutHome" />
+        android:onClick="listGame"
+        android:text="Join Game" />
 
     <Button
         android:id="@+id/hostGame"

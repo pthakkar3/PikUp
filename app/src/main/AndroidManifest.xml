@@ -21,7 +21,8 @@
         <activity android:name=".ui.HomeScreenActivity" />
         <activity android:name=".ui.UserProfileActivity" />
         <activity android:name=".ui.ForgotPasswordActivity" />
-        <activity android:name=".ui.HostActivity"></activity>
+        <activity android:name=".ui.HostActivity" />
+        <activity android:name=".ui.JoinListActivity"></activity>
     </application>
 
 </manifest>

@@ -51,6 +51,7 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<String> sportsList;
     private List<SportsLocations> sportsLocationsList;
     private ArrayAdapter<String> sportsLocationsAdapter;
+    private ArrayList<String> playersList;
 
     private TimePicker timePicker;
     private DatePicker datePicker;
@@ -80,7 +81,7 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 
         sportsLocationsList = new ArrayList<>();
         sportsList = new ArrayList<>();
-
+        playersList = new ArrayList<>();
         locationSpinner = (Spinner) findViewById(R.id.locationSpinner);
         intensity = (RatingBar) findViewById(R.id.intensityBar);
         numberOfPlayers = (NumberPicker) findViewById(R.id.numberOfPlayers);
@@ -188,7 +189,9 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     public void hostNewGame(View view) {
+        playersList.add(mAuth.getCurrentUser().getUid());
         Game newGame = new Game();
+        newGame.setPlayerUIDList(playersList);
         newGame.setHostUID(mAuth.getCurrentUser().getUid());
         newGame.setSport(sportSelected);
         newGame.setLocationTitle(locationSelected);
