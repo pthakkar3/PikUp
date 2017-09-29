@@ -201,6 +201,8 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         // storing the date from Calendar object
         // MONTH IS STORED FROM 0-11, ADD 1 WHEN CALLED FROM DATABASE
         // WHY NOT JUST ADD 1 HERE DUDE
+        // Because the Calendar class itself is what converts 1-12 to 0-11.
+        // We are giving inputs from 1-12 already when we select the month from the picker.
         newGame.setTimeOfGame(cal.getTime());
 
         currentRef = mDatabase.child("gamesList");
