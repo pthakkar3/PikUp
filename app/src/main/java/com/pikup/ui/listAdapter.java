@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.Query;
 import com.pikup.R;
 import com.pikup.model.Game;
 
@@ -35,12 +36,15 @@ public class listAdapter extends ArrayAdapter<Game> {
 
 
 
+
     public listAdapter(Activity context, List<Game> gameList) {
         super(context, R.layout.activity_list_layout, gameList);
         this.context = context;
         this.gameList = gameList;
 
     }
+
+
 
     public View getView(int position, View convertView, ViewGroup parent) {
         mAuth = FirebaseAuth.getInstance();
@@ -50,6 +54,7 @@ public class listAdapter extends ArrayAdapter<Game> {
         TextView listLocation = (TextView) listViewItem.findViewById(R.id.listLocation);
         TextView listTime = (TextView) listViewItem.findViewById(R.id.listTime);
         TextView listDate = (TextView) listViewItem.findViewById(R.id.listDate);
+
         RatingBar listIntensityBar = (RatingBar) listViewItem.findViewById(R.id.listIntensityBar);
         Button joinGame = (Button) listViewItem.findViewById(R.id.joinGame);
 
@@ -64,28 +69,40 @@ public class listAdapter extends ArrayAdapter<Game> {
         listLocation.setText(game.getLocationTitle());
         listIntensityBar.setRating(game.getIntensity());
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
-
+        final String game_key = mDatabase.child("gamesList").push().getKey();
+        System.out.print(game_key);
+        joinGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<String> editedList = game.getPlayerUIDList();
+                editedList.add(mAuth.getCurrentUser().getUid());
+                game.setPlayerUIDList((ArrayList<String>) editedList);
+                mDatabase.child("gamesList").child(game_key).child("playerUIDList").setValue(editedList);
+            }
+        });
 
         return listViewItem;
     }
 
-    public void joinExistedGame(View view) {
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Game game = dataSnapshot.getValue(Game.class);
-                List<String> editedList = game.getPlayerUIDList();
-                editedList.add(mAuth.getCurrentUser().getUid());
-                game.setPlayerUIDList((ArrayList<String>) editedList);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    public void joinExistedGame(View view) {
+//        mDatabase = FirebaseDatabase.getInstance().getReference();
+//        currentRef = mDatabase.child(gamesListURL);
+//        mDatabase.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Game game = dataSnapshot.getValue(Game.class);
+//                List<String> editedList = game.getPlayerUIDList();
+//                editedList.add(mAuth.getCurrentUser().getUid());
+//                currentRef.setValue(editedList);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 }
