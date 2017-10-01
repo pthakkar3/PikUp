@@ -32,7 +32,8 @@ public class listAdapter extends ArrayAdapter<Game> {
     private DatabaseReference currentRef;
     private DataSnapshot gamesList;
     private List<Game> gameList;
-    private String gameKey;
+    //private String gameKey;
+    //private Game game;
 
 
 
@@ -62,6 +63,7 @@ public class listAdapter extends ArrayAdapter<Game> {
         java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
         java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
         final Game game = gameList.get(position);
+        String gameKey = "";
 
         cal.setTime(game.getTimeOfGame());
         listSport.setText(game.getSport());
@@ -73,7 +75,7 @@ public class listAdapter extends ArrayAdapter<Game> {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         currentRef = mDatabase.child("gamesList");
 
-        final String game_key = mDatabase.child("gamesList").push().getKey();
+        //final String game_key = mDatabase.child("gamesList").push().getKey();
         //currentRef.child(gameKey).removeValue();
         //System.out.print("Game selected: " + gameKey);
 
@@ -88,6 +90,8 @@ public class listAdapter extends ArrayAdapter<Game> {
             }
         }
 
+        final String game_key = gameKey;
+
         //Log.i("JOIN - listAdapter", "game Key: " + gameKey);
         //currentRef.child(gameKey).removeValue();
         //System.out.print(game_key);
@@ -97,7 +101,7 @@ public class listAdapter extends ArrayAdapter<Game> {
                 List<String> editedList = game.getPlayerUIDList();
                 editedList.add(mAuth.getCurrentUser().getUid());
                 game.setPlayerUIDList((ArrayList<String>) editedList);
-                mDatabase.child("gamesList").child(gameKey).child("playerUIDList").setValue(editedList);
+                mDatabase.child("gamesList").child(game_key).child("playerUIDList").setValue(editedList);
                 String toastText = "You have successfully joined the " + game.getSport() + " game on " + game.getTimeOfGame().toString().substring(0, 10);
                 Toast temp = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
                 temp.setGravity(Gravity.CENTER,0,0);
