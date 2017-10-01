@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -108,9 +109,17 @@ public class UserProfileActivity extends AppCompatActivity {
 
         userRef.setValue(currentUser);
 
+        Toast.makeText(UserProfileActivity.this, "Your changes have been saved!",
+                Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, HomeScreenActivity.class);
+        startActivity(intent);
+        finish();
+
     }
 
     public void profileOnBack(View view) {
+        Toast.makeText(UserProfileActivity.this, "You exited without saving your changes.",
+                Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, HomeScreenActivity.class);
         startActivity(intent);
         finish();
