@@ -1,7 +1,8 @@
 package com.pikup.ui;
 
 import android.app.Activity;
-import android.util.Log;
+import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +10,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.Query;
 import com.pikup.R;
 import com.pikup.model.Game;
 
@@ -99,6 +98,10 @@ public class listAdapter extends ArrayAdapter<Game> {
                 editedList.add(mAuth.getCurrentUser().getUid());
                 game.setPlayerUIDList((ArrayList<String>) editedList);
                 mDatabase.child("gamesList").child(gameKey).child("playerUIDList").setValue(editedList);
+                String toastText = "You have successfully joined the " + game.getSport() + " game on " + game.getTimeOfGame().toString().substring(0, 10);
+                Toast temp = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
+                temp.setGravity(Gravity.CENTER,0,0);
+                temp.show();
                 //currentRef.push().setValue(game);
             }
         });
