@@ -122,4 +122,27 @@ public class Game {
     public void setPlayerUIDList(ArrayList<String> playerUIDList) {
         this.playerUIDList = playerUIDList;
     }
+
+    @Override
+    public String toString() {
+        return locationTitle + " " + sport + " " + hostUID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Game)) { return false; }
+        Game g = (Game) o;
+
+        if (sport.equals(g.getSport())
+                && timeOfGame.equals(g.getTimeOfGame())
+                && locationTitle.equals(g.getLocationTitle())
+                && locationLatitude == g.getLocationLatitude()
+                && locationLongitude == g.getLocationLongitude()
+                && capacity == g.getCapacity()
+                && intensity == g.getIntensity()
+                && gameStatus.equals(g.getGameStatus())
+                && hostUID.equals(g.getHostUID())
+                && playerUIDList.equals(g.getPlayerUIDList())) { return true; }
+        return false;
+    }
 }

@@ -1,6 +1,7 @@
 package com.pikup.ui;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,18 +31,19 @@ public class listAdapter extends ArrayAdapter<Game> {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private DatabaseReference currentRef;
+    private DataSnapshot gamesList;
     private List<Game> gameList;
-    private Game current;
+    private String gameKey;
 
 
 
 
 
-    public listAdapter(Activity context, List<Game> gameList) {
+    public listAdapter(Activity context, List<Game> gameList, DataSnapshot gamesList) {
         super(context, R.layout.activity_list_layout, gameList);
         this.context = context;
         this.gameList = gameList;
-
+        this.gamesList = gamesList;
     }
 
 
@@ -70,16 +72,34 @@ public class listAdapter extends ArrayAdapter<Game> {
         listIntensityBar.setRating(game.getIntensity());
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        currentRef = mDatabase.child("gamesList");
 
         final String game_key = mDatabase.child("gamesList").push().getKey();
-        System.out.print(game_key);
+        //currentRef.child(gameKey).removeValue();
+        //System.out.print("Game selected: " + gameKey);
+
+
+        // TODO: Fix all the potato code (sorry)
+        for(DataSnapshot gameSnapshot: gamesList.getChildren()) {
+            Game g = gameSnapshot.getValue(Game.class);
+            if (g.equals(game)) {
+                gameKey = gameSnapshot.getKey();
+                //Log.i("JOIN - listAdapter", "the games were equal");
+
+            }
+        }
+
+        //Log.i("JOIN - listAdapter", "game Key: " + gameKey);
+        //currentRef.child(gameKey).removeValue();
+        //System.out.print(game_key);
         joinGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 List<String> editedList = game.getPlayerUIDList();
                 editedList.add(mAuth.getCurrentUser().getUid());
                 game.setPlayerUIDList((ArrayList<String>) editedList);
-                mDatabase.child("gamesList").child(game_key).child("playerUIDList").setValue(editedList);
+                mDatabase.child("gamesList").child(gameKey).child("playerUIDList").setValue(editedList);
+                //currentRef.push().setValue(game);
             }
         });
 
