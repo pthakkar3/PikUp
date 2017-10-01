@@ -56,7 +56,7 @@ public class JoinListActivity extends AppCompatActivity { // AppCompatActivity
                 for(DataSnapshot gameSnapshot: dataSnapshot.getChildren()) {
                     Game game = gameSnapshot.getValue(Game.class);
                     //Log.i(TAG, gam)
-                    if (!userUID.equals(game.getHostUID())) {
+                    if ((!userUID.equals(game.getHostUID())) && (!(game.getPlayerUIDList().contains(userUID)))) {
                         gameList.add(game);
                     }
                 }
