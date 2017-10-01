@@ -381,4 +381,12 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
             test = new SportsLocations("Tennis", listOfLocations);
         currentRef.push().setValue(test);
     }
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(HostActivity.this, HomeScreenActivity.class));
+        finish();
+
+    }
 }

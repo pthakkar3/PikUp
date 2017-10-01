@@ -124,5 +124,12 @@ public class UserProfileActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(UserProfileActivity.this, HomeScreenActivity.class));
+        finish();
 
+    }
 }

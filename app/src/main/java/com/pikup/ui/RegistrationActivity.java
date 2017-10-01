@@ -159,4 +159,12 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(RegistrationActivity.this, WelcomeScreenActivity.class));
+        finish();
+
+    }
 }
