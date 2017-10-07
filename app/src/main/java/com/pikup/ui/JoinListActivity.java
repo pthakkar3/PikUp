@@ -1,7 +1,10 @@
 package com.pikup.ui;
 
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class JoinListActivity extends AppCompatActivity { // AppCompatActivity
+public class JoinListActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference currentRef;
 
@@ -51,23 +54,25 @@ public class JoinListActivity extends AppCompatActivity { // AppCompatActivity
         currentRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //String gameKey = dataSnapshot.get
                 gameList.clear();
                 for(DataSnapshot gameSnapshot: dataSnapshot.getChildren()) {
                     Game game = gameSnapshot.getValue(Game.class);
-                    //Log.i(TAG, gam)
                     if ((!userUID.equals(game.getHostUID())) && (!(game.getPlayerUIDList().contains(userUID))) && game.getCapacity() > game.getPlayerUIDList().size()) {
                         gameList.add(game);
                     }
                 }
                 listAdapter adapter = new listAdapter(JoinListActivity.this, gameList, dataSnapshot);
                 listViewGame.setAdapter(adapter);
+
+                isGameListEmpty();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
+
+
         });
     }
     @Override
@@ -76,19 +81,45 @@ public class JoinListActivity extends AppCompatActivity { // AppCompatActivity
         super.onBackPressed();
         startActivity(new Intent(JoinListActivity.this, HomeScreenActivity.class));
         finish();
-
     }
 
-
-    /*@Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        // Do something when a list item is clicked
-        selectedGame = (Game) listViewGame.getItemAtPosition(position);
-    }*/
-
-    public void joinExistedGame(View view) {
-
-        //R.id.
-        Log.i("JOIN", selectedGame.toString());
+    private void isGameListEmpty() {
+        if (gameList.isEmpty()) {
+            AlertDialog.Builder builder;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+            } else {
+                builder = new AlertDialog.Builder(this);
+            }
+            builder.setTitle("There aren't any games available right now")
+                    .setMessage("Would you like to host your own?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // go host a game
+                            hostGame();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // go back to home screen
+                            homeScreen();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
     }
+
+    private void hostGame() {
+        Intent intent = new Intent(this, HostActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void homeScreen() {
+        Intent intent = new Intent(this, HomeScreenActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }
