@@ -86,34 +86,39 @@ public class UserProfileActivity extends AppCompatActivity {
         RadioGroup selectGenderGroup = (RadioGroup) findViewById(R.id.userProfileGender);
         RadioGroup selectAffiliationGroup = (RadioGroup) findViewById(R.id.userProfileAffiliation);
 
-        String displayName = displayNameTextBox.getText().toString();
-        String phoneNumber = phoneNumberTextBox.getText().toString();
-        int age = Integer.parseInt(ageTextBox.getText().toString());
-        String gender;
-        if (selectGenderGroup.getCheckedRadioButtonId() == R.id.userProfileMaleSelect) {
-            gender = "Male";
+        if(displayNameTextBox.getText().toString().length() > 15) {
+            Toast.makeText(UserProfileActivity.this, "You can only have upto 15 characters in your name :(",
+                    Toast.LENGTH_LONG).show();
         } else {
-            gender = "Female";
+            String displayName = displayNameTextBox.getText().toString();
+            String phoneNumber = phoneNumberTextBox.getText().toString();
+            int age = Integer.parseInt(ageTextBox.getText().toString());
+            String gender;
+            if (selectGenderGroup.getCheckedRadioButtonId() == R.id.userProfileMaleSelect) {
+                gender = "Male";
+            } else {
+                gender = "Female";
+            }
+            boolean isStudent;
+            if (selectAffiliationGroup.getCheckedRadioButtonId() == R.id.userProfileStudentSelect) {
+                isStudent = true;
+            } else {
+                isStudent = false;
+            }
+
+            User currentUser = new User(displayName, age, gender, Long.parseLong(phoneNumber), isStudent);
+
+            mDatabase = FirebaseDatabase.getInstance().getReference();
+            DatabaseReference userRef = mDatabase.child("userList").child(mAuth.getCurrentUser().getUid());
+
+            userRef.setValue(currentUser);
+
+            Toast.makeText(UserProfileActivity.this, "Your changes have been saved!",
+                    Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, HomeScreenActivity.class);
+            startActivity(intent);
+            finish();
         }
-        boolean isStudent;
-        if (selectAffiliationGroup.getCheckedRadioButtonId() == R.id.userProfileStudentSelect) {
-            isStudent = true;
-        } else {
-            isStudent = false;
-        }
-
-        User currentUser = new User(displayName, age, gender, Long.parseLong(phoneNumber), isStudent);
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference userRef = mDatabase.child("userList").child(mAuth.getCurrentUser().getUid());
-
-        userRef.setValue(currentUser);
-
-        Toast.makeText(UserProfileActivity.this, "Your changes have been saved!",
-                Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, HomeScreenActivity.class);
-        startActivity(intent);
-        finish();
 
     }
 

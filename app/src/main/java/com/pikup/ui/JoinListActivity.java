@@ -1,14 +1,11 @@
 package com.pikup.ui;
 
-import android.app.ListActivity;
+
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,10 +18,9 @@ import com.pikup.R;
 import com.pikup.model.Game;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 
 public class JoinListActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -86,11 +82,8 @@ public class JoinListActivity extends AppCompatActivity {
     private void isGameListEmpty() {
         if (gameList.isEmpty()) {
             AlertDialog.Builder builder;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
-            } else {
-                builder = new AlertDialog.Builder(this);
-            }
+
+            builder = new AlertDialog.Builder(this);
             builder.setTitle("There aren't any games available right now")
                     .setMessage("Would you like to host your own?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -105,7 +98,7 @@ public class JoinListActivity extends AppCompatActivity {
                             homeScreen();
                         }
                     })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIconAttribute(android.R.attr.alertDialogIcon)
                     .show();
         }
     }

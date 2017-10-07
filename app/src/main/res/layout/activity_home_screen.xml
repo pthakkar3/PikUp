@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,58 +8,78 @@
 
     <Button
         android:id="@+id/joinGame"
-        android:layout_width="wrap_content"
+        android:layout_width="116dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/logOutHome"
-        android:layout_alignStart="@+id/logOutHome"
-        android:layout_below="@+id/hostGame"
-        android:layout_marginTop="42dp"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="#ff3f9c"
         android:onClick="listGame"
-        android:text="Join Game" />
+        android:text="Join Game"
+        android:textColor="#FFFFFF"
+        android:layout_alignBaseline="@+id/hostGame"
+        android:layout_alignBottom="@+id/hostGame"
+        android:layout_alignRight="@+id/mapPic"
+        android:layout_alignEnd="@+id/mapPic" />
 
     <Button
         android:id="@+id/hostGame"
-        android:layout_width="wrap_content"
+        android:layout_width="116dp"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/joinGame"
-        android:layout_alignRight="@+id/joinGame"
-        android:layout_below="@+id/userProfileHome"
-        android:layout_marginTop="34dp"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="#ff3f9c"
         android:onClick="hostGame"
-        android:text="Host Game" />
+        android:text="Host Game"
+        android:textColor="#FFFFFF"
+        android:layout_alignBaseline="@+id/userProfileHome"
+        android:layout_alignBottom="@+id/userProfileHome"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/toBe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_alignLeft="@+id/userProfileHome"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/userProfileHome"
+        android:layout_marginTop="16dp"
+        android:layout_toLeftOf="@+id/logOutHome"
+        android:layout_toStartOf="@+id/logOutHome"
         android:text="Home Screen"
-        android:textSize="40sp"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/logOutHome"
-        android:backgroundTint="@android:color/white"
+        android:layout_width="116dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#ff3f9c"
         android:onClick="logOut"
         android:text="Log Out"
-        android:layout_marginBottom="46dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:textColor="#FFFFFF"
+        android:layout_alignBaseline="@+id/toBe"
+        android:layout_alignBottom="@+id/toBe"
+        android:layout_toRightOf="@+id/hostGame"
+        android:layout_toEndOf="@+id/hostGame" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/userProfileHome"
-        android:layout_marginTop="48dp"
+        android:layout_width="116dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#ff3f9c"
         android:onClick="viewProfile"
-        android:backgroundTint="@android:color/white"
         android:text="User Profile"
+        android:textColor="#FFFFFF"
         android:layout_below="@+id/toBe"
-        android:layout_centerHorizontal="true" />
+        android:layout_toLeftOf="@+id/hostGame"
+        android:layout_toStartOf="@+id/hostGame" />
+
+    <ImageView
+        android:id="@+id/mapPic"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_below="@+id/joinGame"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="21dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/map"
+        android:cropToPadding="false" />
 
 </RelativeLayout>
