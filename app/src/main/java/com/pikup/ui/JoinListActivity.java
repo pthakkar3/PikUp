@@ -1,11 +1,13 @@
 package com.pikup.ui;
 
 
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,7 +21,6 @@ import com.pikup.model.Game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class JoinListActivity extends AppCompatActivity {
@@ -29,10 +30,6 @@ public class JoinListActivity extends AppCompatActivity {
     ListView listViewGame;
     List<Game> gameList;
     String userUID;
-    Map<Integer, String> viewTohostUID;
-
-    // TODO: desribe this variable
-    private int gameListState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +40,6 @@ public class JoinListActivity extends AppCompatActivity {
         listViewGame = (ListView) findViewById(R.id.listViewGame);
         userUID = mAuth.getCurrentUser().getUid();
         gameList = new ArrayList<>();
-        gameListState = -1;
     }
 
     @Override
@@ -63,11 +59,8 @@ public class JoinListActivity extends AppCompatActivity {
                 listAdapter adapter = new listAdapter(JoinListActivity.this, gameList, dataSnapshot);
                 listViewGame.setAdapter(adapter);
 
-                if (gameList.isEmpty()) {
-                    gameListState = 0;
-                } else {
-                    gameListState = 1;
-                }
+                isGameListEmpty();
+
             }
 
             @Override
@@ -75,9 +68,6 @@ public class JoinListActivity extends AppCompatActivity {
 
             }
         });
-
-        GameThread p = new GameThread();
-        p.start();
 
 
     }
@@ -91,10 +81,12 @@ public class JoinListActivity extends AppCompatActivity {
 
     private void isGameListEmpty() {
 
-        if (gameListState == 0) {
+        if (gameList.isEmpty()) {
             AlertDialog.Builder builder;
 
             builder = new AlertDialog.Builder(this);
+            // AlertDialog alert = builder.create();
+            if (!this.isFinishing()) {
             builder.setTitle("There aren't any games available right now")
                     .setMessage("Would you like to host your own?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -111,9 +103,7 @@ public class JoinListActivity extends AppCompatActivity {
                     })
                     .setIconAttribute(android.R.attr.alertDialogIcon)
                     .show();
-
-
-
+            }
         }
     }
 
@@ -126,24 +116,6 @@ public class JoinListActivity extends AppCompatActivity {
         Intent intent = new Intent(this, HomeScreenActivity.class);
         startActivity(intent);
         finish();
-    }
-
-
-
-    class GameThread extends Thread {
-
-        GameThread() {
-        }
-
-        public void run() {
-            isGameListEmpty();
-//            try {
-//            sleep(250);
-//            }
-            if (gameListState == 1) {
-                return;
-            }
-        }
     }
 
 }
