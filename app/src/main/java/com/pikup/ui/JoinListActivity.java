@@ -28,9 +28,11 @@ public class JoinListActivity extends AppCompatActivity {
 
     ListView listViewGame;
     List<Game> gameList;
-    Game selectedGame;
     String userUID;
     Map<Integer, String> viewTohostUID;
+
+    // TODO: desribe this variable
+    private int gameListState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class JoinListActivity extends AppCompatActivity {
         listViewGame = (ListView) findViewById(R.id.listViewGame);
         userUID = mAuth.getCurrentUser().getUid();
         gameList = new ArrayList<>();
+        gameListState = -1;
     }
 
     @Override
@@ -60,16 +63,23 @@ public class JoinListActivity extends AppCompatActivity {
                 listAdapter adapter = new listAdapter(JoinListActivity.this, gameList, dataSnapshot);
                 listViewGame.setAdapter(adapter);
 
-                isGameListEmpty();
+                if (gameList.isEmpty()) {
+                    gameListState = 0;
+                } else {
+                    gameListState = 1;
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-
-
         });
+
+        GameThread p = new GameThread();
+        p.start();
+
+
     }
     @Override
     public void onBackPressed()
@@ -80,7 +90,8 @@ public class JoinListActivity extends AppCompatActivity {
     }
 
     private void isGameListEmpty() {
-        if (gameList.isEmpty()) {
+
+        if (gameListState == 0) {
             AlertDialog.Builder builder;
 
             builder = new AlertDialog.Builder(this);
@@ -100,12 +111,14 @@ public class JoinListActivity extends AppCompatActivity {
                     })
                     .setIconAttribute(android.R.attr.alertDialogIcon)
                     .show();
+
+
+
         }
     }
 
     private void hostGame() {
-        Intent intent = new Intent(this, HostActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(getApplicationContext(), HostActivity.class));
         finish();
     }
 
@@ -113,6 +126,24 @@ public class JoinListActivity extends AppCompatActivity {
         Intent intent = new Intent(this, HomeScreenActivity.class);
         startActivity(intent);
         finish();
+    }
+
+
+
+    class GameThread extends Thread {
+
+        GameThread() {
+        }
+
+        public void run() {
+            isGameListEmpty();
+//            try {
+//            sleep(250);
+//            }
+            if (gameListState == 1) {
+                return;
+            }
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.pikup.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.pikup.model.Game;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
 
 
 public class listAdapter extends ArrayAdapter<Game> {
@@ -32,20 +34,15 @@ public class listAdapter extends ArrayAdapter<Game> {
     private DatabaseReference currentRef;
     private DataSnapshot gamesList;
     private List<Game> gameList;
-    //private String gameKey;
-    //private Game game;
 
 
 
-
-
-    public listAdapter(Activity context, List<Game> gameList, DataSnapshot gamesList) {
+     public listAdapter(Activity context, List<Game> gameList, DataSnapshot gamesList) {
         super(context, R.layout.activity_list_layout, gameList);
         this.context = context;
         this.gameList = gameList;
         this.gamesList = gamesList;
     }
-
 
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -83,6 +80,7 @@ public class listAdapter extends ArrayAdapter<Game> {
         // TODO: Fix all the potato code (sorry)
         for(DataSnapshot gameSnapshot: gamesList.getChildren()) {
             Game g = gameSnapshot.getValue(Game.class);
+            if (g == null) { break; }
             if (g.equals(game)) {
                 gameKey = gameSnapshot.getKey();
                 //Log.i("JOIN - listAdapter", "the games were equal");
@@ -92,9 +90,6 @@ public class listAdapter extends ArrayAdapter<Game> {
 
         final String game_key = gameKey;
 
-        //Log.i("JOIN - listAdapter", "game Key: " + gameKey);
-        //currentRef.child(gameKey).removeValue();
-        //System.out.print(game_key);
         joinGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,30 +101,10 @@ public class listAdapter extends ArrayAdapter<Game> {
                 Toast temp = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
                 temp.setGravity(Gravity.CENTER,0,0);
                 temp.show();
-                //currentRef.push().setValue(game);
             }
         });
 
         return listViewItem;
     }
 
-//    public void joinExistedGame(View view) {
-//        mDatabase = FirebaseDatabase.getInstance().getReference();
-//        currentRef = mDatabase.child(gamesListURL);
-//        mDatabase.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Game game = dataSnapshot.getValue(Game.class);
-//                List<String> editedList = game.getPlayerUIDList();
-//                editedList.add(mAuth.getCurrentUser().getUid());
-//                currentRef.setValue(editedList);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
 }
