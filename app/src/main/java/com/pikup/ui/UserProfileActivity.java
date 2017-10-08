@@ -1,13 +1,21 @@
 package com.pikup.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -16,7 +24,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pikup.R;
+import com.pikup.model.Game;
 import com.pikup.model.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Altan on 9/7/2017.
@@ -135,6 +147,51 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onBackPressed();
         startActivity(new Intent(UserProfileActivity.this, HomeScreenActivity.class));
         finish();
+
+    }
+
+
+    public void deleteAccount(View view) {
+        AlertDialog.Builder builder;
+
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Account")
+                .setMessage("Are you sure you wanna leave us? :(")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleting();
+                        Intent intent = new Intent(UserProfileActivity.this, WelcomeScreenActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(UserProfileActivity.this, "We're glad you're staying :)",
+                                Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setIconAttribute(android.R.attr.alertDialogIcon)
+                .show();
+
+    }
+
+    public void deleting() {
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userRef = mDatabase.child("userList").child(mAuth.getCurrentUser().getUid());
+        userRef.removeValue();
+        //TODO: remove this user from every game they are in
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        user.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("", "User account deleted.");
+                        }
+                    }
+                });
 
     }
 }
