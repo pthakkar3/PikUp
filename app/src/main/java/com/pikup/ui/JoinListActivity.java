@@ -176,6 +176,8 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
 
         sportSpinner.setOnItemSelectedListener(this);
         intensitySpinner.setOnItemSelectedListener(this);
+        locationSpinner.setOnItemSelectedListener(this);
+        playerSpinner.setOnItemSelectedListener(this);
 
     }
 
