@@ -4,8 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -36,10 +37,12 @@ import com.pikup.model.SportsLocations;
 import com.pikup.model.User;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class HostActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -65,7 +68,6 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private final String sportsListURL = "sportsList/";
     private final String locationListURL = "sportsList/locations/";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,14 +283,44 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            HostActivity.cal.set(java.util.Calendar.HOUR_OF_DAY, hourOfDay);
-            HostActivity.cal.set(java.util.Calendar.MINUTE, minute);
-            HostActivity.cal.set(java.util.Calendar.SECOND, 0);
-            HostActivity.cal.set(java.util.Calendar.MILLISECOND, 0);
+            java.util.Calendar rightNow = java.util.Calendar.getInstance();
+            java.util.Calendar userInput = java.util.Calendar.getInstance();
+
+            userInput.set(java.util.Calendar.YEAR, cal.get(java.util.Calendar.YEAR));
+            userInput.set(java.util.Calendar.MONTH, cal.get(java.util.Calendar.MONTH));
+            userInput.set(java.util.Calendar.DAY_OF_MONTH, cal.get(java.util.Calendar.DAY_OF_MONTH));
+            userInput.set(java.util.Calendar.HOUR_OF_DAY, hourOfDay);
+            userInput.set(java.util.Calendar.MINUTE, minute);
+
+            if (!userInput.after(rightNow)){
+                CharSequence text = "Please select a time in the future.";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(this.getActivity().getApplicationContext(), text,
+                        duration);
+                toast.show();
+
+                // Set button text to invalid selection
+                Button timePickButton = (Button)this.getActivity().findViewById(R.id.timePickButton);
+                timePickButton.setText("Pick a time");
+
+            } else {
+                HostActivity.cal.set(java.util.Calendar.HOUR_OF_DAY, hourOfDay);
+                HostActivity.cal.set(java.util.Calendar.MINUTE, minute);
+                HostActivity.cal.set(java.util.Calendar.SECOND, 0);
+                HostActivity.cal.set(java.util.Calendar.MILLISECOND, 0);
+
+                // Set button text to selected time
+                Button timePickButton = (Button)this.getActivity().findViewById(R.id.timePickButton);
+                SimpleDateFormat fmt = new SimpleDateFormat("hh:mm aa", Locale.US);
+                String dateString = fmt.format(userInput.getTime());
+                timePickButton.setText(dateString);
+            }
         }
     }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -304,9 +336,36 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            HostActivity.cal.set(java.util.Calendar.YEAR, year);
-            HostActivity.cal.set(java.util.Calendar.MONTH, month);
-            HostActivity.cal.set(java.util.Calendar.DAY_OF_MONTH, dayOfMonth);
+            java.util.Calendar rightNow = java.util.Calendar.getInstance();
+            java.util.Calendar userInput = java.util.Calendar.getInstance();
+
+            userInput.set(java.util.Calendar.YEAR, year);
+            userInput.set(java.util.Calendar.MONTH, month);
+            userInput.set(java.util.Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            if (userInput.compareTo(rightNow) == -1) {
+                CharSequence text = "Please select a date in the future.";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(this.getActivity().getApplicationContext(), text,
+                                             duration);
+                toast.show();
+
+                // Set button text to invalid selection
+                Button timePickButton = (Button)this.getActivity().findViewById(R.id.timePickButton);
+                timePickButton.setText("Pick a date");
+
+            } else {
+                HostActivity.cal.set(java.util.Calendar.YEAR, year);
+                HostActivity.cal.set(java.util.Calendar.MONTH, month);
+                HostActivity.cal.set(java.util.Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                // Set button text to selected date
+                Button datePickButton = (Button)this.getActivity().findViewById(R.id.datePickButton);
+                SimpleDateFormat fmt = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+                String dateString = fmt.format(userInput.getTime());
+                datePickButton.setText(dateString);
+            }
         }
     }
 
