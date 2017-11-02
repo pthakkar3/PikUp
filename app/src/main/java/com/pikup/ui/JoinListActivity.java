@@ -318,7 +318,7 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
     private boolean fitsFilter(Game g) {
         if ((g.getSport().equals(spSelected) || spSelected.equals("-Select Sport-"))
             && (g.getLocationTitle().equals(loSelected) || loSelected.equals("-Select Location-"))
-            && (inSelected.equals(g.getIntensity()) || inSelected.equals("-Select Intensity-"))) {
+            && (inSelected.equals(Integer.toString(g.getIntensity())) || inSelected.equals("-Select Intensity-"))) {
             return true;
             //for each player in game g
             //check if player is type selected
