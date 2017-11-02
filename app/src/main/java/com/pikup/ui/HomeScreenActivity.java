@@ -55,6 +55,8 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     }
 
+
+
     public void viewProfile(View view) {
         Intent intent = new Intent(this, UserProfileActivity.class);
         startActivity(intent);

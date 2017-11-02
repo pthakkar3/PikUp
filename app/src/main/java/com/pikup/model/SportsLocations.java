@@ -32,11 +32,15 @@ public class SportsLocations {
     public String toString() { return game; }
 
     public boolean equals(Object o) {
-        if (o instanceof String) {
-            return (o.equals(game));
-        }
+//        if (o instanceof String) {
+//            return (o.equals(game));
+//        }
         SportsLocations s = (SportsLocations) o;
         return (s.getGame().equals(game) && s.getLocations().equals(locations));
+    }
+
+    public boolean equals(String s) {
+        return s.equals(game);
     }
 
 }

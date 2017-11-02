@@ -55,6 +55,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    /* This will skip from the Registration screen to the homescreen
     @Override
     public void onResume() {
         super.onResume();
@@ -65,6 +66,7 @@ public class RegistrationActivity extends AppCompatActivity {
             finish();
         }
     }
+    */
 
     public void registerAttempt(View view) {
         EditText nameEdit = (EditText) findViewById(R.id.enterNameRegister);

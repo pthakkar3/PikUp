@@ -167,8 +167,8 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void attachListenerToSpinner() {
-        Log.i(TAG, "Current Size of sportsLocationList: " + sportsLocationsList.size());
-        Log.i(TAG, "Current Size of sportsList: " + sportsList.size());
+        // Log.i(TAG, "Current Size of sportsLocationList: " + sportsLocationsList.size());
+        // Log.i(TAG, "Current Size of sportsList: " + sportsList.size());
         // Populate the Sports dropdown with the Sports pulled from the database
         sportSpinner = (Spinner) findViewById(R.id.sportSpinner);
         ArrayAdapter<String> sportsAdapter = new ArrayAdapter<>(
