@@ -39,6 +39,10 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
             }
         };
+
+        // Append @gatech.edu to registration email
+        EditText emailField = (EditText)findViewById(R.id.enterEmailRegister);
+        emailField.setText("@gatech.edu");
     }
 
     @Override

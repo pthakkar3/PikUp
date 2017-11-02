@@ -38,6 +38,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
+
+        // Append @gatech.edu to login email
+        EditText emailField = (EditText)findViewById(R.id.enterEmailLogin);
+        emailField.setText("@gatech.edu");
     }
 
     @Override
