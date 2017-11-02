@@ -54,6 +54,17 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        final FirebaseUser user = mAuth.getCurrentUser();
+//        if (user != null && user.isEmailVerified()) {
+//            Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
+//    }
+
     public void logInAttempt(View view) {
         EditText emailEdit = (EditText) findViewById(R.id.enterEmailLogin);
         EditText passwordEdit = (EditText) findViewById(R.id.enterPasswordLogin);
