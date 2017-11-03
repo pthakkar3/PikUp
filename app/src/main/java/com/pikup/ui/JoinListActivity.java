@@ -328,6 +328,7 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
             }
             if (parent.getId() == intensitySpinner.getId()) {
                 inSelected = temp;
+                isExclusive = !temp.equals("-Select Player-");
             }
 
         }
