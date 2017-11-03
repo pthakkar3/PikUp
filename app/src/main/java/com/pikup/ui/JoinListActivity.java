@@ -224,7 +224,8 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
                     Game game = gameSnapshot.getValue(Game.class);
                     if ((fitsFilter(game)) && (!userUID.equals(game.getHostUID()))
                             && (!(game.getPlayerUIDList().contains(userUID)))
-                            && game.getCapacity() > game.getPlayerUIDList().size()) {
+                            && game.getCapacity() > game.getPlayerUIDList().size()
+                            && !(game.getIsExclusive() && isStudent != game.getIsHostStudent())) {
                         gameList.add(game);
                     }
 
@@ -311,12 +312,6 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
                         location.addAll(s.getLocations());
                     }
                 }
-
-                // TODO: Make this less garbage by using global variables to prevent a waste of resources
-//                ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>(this,
-//                        android.R.layout.simple_spinner_item, location);
-//                locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                locationSpinner.setAdapter(locationAdapter);
 
                 spSelected = temp;
             }
