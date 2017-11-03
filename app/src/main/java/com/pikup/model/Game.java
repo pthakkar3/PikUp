@@ -21,6 +21,10 @@ public class Game {
     private String hostUID;
     private List<String> playerUIDList;
 
+    private boolean isExclusive;
+
+    private boolean isHostStudent;
+
     public Game() {
         this.sport = "";
         this.timeOfGame = new Date();
@@ -32,9 +36,10 @@ public class Game {
         this.gameStatus = "";
         this.hostUID = "";
         this.playerUIDList = new ArrayList<>();
+        this.isExclusive = false;
     }
 
-    public Game(String sport, Date timeOfGame, String locationTitle, double locationLatitude, double locationLongitude, int capacity ,int intensity, String gameStatus, String hostUID, ArrayList<String> playerUIDList) {
+    public Game(String sport, Date timeOfGame, String locationTitle, double locationLatitude, double locationLongitude, int capacity ,int intensity, String gameStatus, String hostUID, ArrayList<String> playerUIDList, boolean isEx) {
         this.sport = sport;
         this.timeOfGame = timeOfGame;
         this.locationTitle = locationTitle;
@@ -45,6 +50,7 @@ public class Game {
         this.gameStatus = gameStatus;
         this.hostUID = hostUID;
         this.playerUIDList = playerUIDList;
+        this.isExclusive = isEx;
     }
 
     public String getSport() {
@@ -122,6 +128,24 @@ public class Game {
     public void setPlayerUIDList(ArrayList<String> playerUIDList) {
         this.playerUIDList = playerUIDList;
     }
+
+    public boolean getIsExclusive() {
+        return isExclusive;
+    }
+
+    public void setIsExclusive(boolean isHostStudent) {
+        this.isExclusive = isHostStudent;
+    }
+
+    public boolean getIsHostStudent() {
+        return isHostStudent;
+    }
+
+    public void setIsHostStudent(boolean isHostStudent) {
+        this.isHostStudent = isHostStudent;
+    }
+
+
 
     @Override
     public String toString() {

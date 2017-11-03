@@ -73,6 +73,9 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
     String plSelected;
     String inSelected;
 
+    boolean isExclusive;
+    boolean isStudent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,8 +111,32 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
         player.add("-Select Player-");
         intensity.add("-Select Intensity-");
 
-        player.add("Student");
-        player.add("Faculty");
+
+
+        DatabaseReference userRef = mDatabase.child("userList").child(mAuth.getCurrentUser().getUid());
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.getValue(User.class);
+
+                if (currentUser != null) {
+                    if (currentUser.getIsStudent()) {
+                        player.add("Students Only");
+                        isStudent = true;
+                    } else {
+                        player.add("Faculty Only");
+                        isStudent = false;
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
 
         intensity.add("1");
@@ -324,10 +351,11 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
         if ((g.getSport().equals(spSelected) || spSelected.equals("-Select Sport-"))
             && (g.getLocationTitle().equals(loSelected) || loSelected.equals("-Select Location-"))
             && (inSelected.equals(Integer.toString(g.getIntensity())) || inSelected.equals("-Select Intensity-"))) {
-            return true;
-            //for each player in game g
-            //check if player is type selected
+            if ((isExclusive && (isStudent == g.getIsHostStudent())) || plSelected.equals("-Select Player-")) {
+                return true;
+            }
         }
+        
         return false;
 
     }

@@ -14,12 +14,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -65,9 +67,12 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
     static java.util.Calendar cal = java.util.Calendar.getInstance();
     private RatingBar intensity;
     private NumberPicker numberOfPlayers;
+    private CheckBox checkBox;
 
     private final String sportsListURL = "sportsList/";
     private final String locationListURL = "sportsList/locations/";
+
+    private boolean isHostStudent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +92,11 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         locationSpinner = (Spinner) findViewById(R.id.locationSpinner);
         intensity = (RatingBar) findViewById(R.id.intensityBar);
         numberOfPlayers = (NumberPicker) findViewById(R.id.numberOfPlayers);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
         numberOfPlayers.setMinValue(0);
         numberOfPlayers.setMaxValue(30);
+
+
 
         /*
         sportsList.add("Basketball");
@@ -159,6 +167,32 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             });
 
+            DatabaseReference userRef = mDatabase.child("userList").child(mAuth.getCurrentUser().getUid());
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User currentUser = dataSnapshot.getValue(User.class);
+
+                    if (currentUser != null) {
+                        if (currentUser.getIsStudent()) {
+                            checkBox.setText("Students Only");
+                            isHostStudent = true;
+                        } else {
+                            checkBox.setText("Faculty Only");
+                            isHostStudent = false;
+                        }
+                    } else {
+                        checkBox.setVisibility(View.INVISIBLE);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
         } catch (NullPointerException ex) {
             Log.e(TAG, "database reference retrieved was null");
             Intent intent = new Intent(this, HomeScreenActivity.class);
@@ -197,6 +231,9 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         newGame.setHostUID(mAuth.getCurrentUser().getUid());
         newGame.setSport(sportSelected);
         newGame.setLocationTitle(locationSelected);
+        newGame.setIsExclusive(checkBox.isChecked());
+        newGame.setIsHostStudent(isHostStudent);
+
         if (intensity.getRating() > 0) {
             newGame.setIntensity((int) intensity.getRating());
         }
