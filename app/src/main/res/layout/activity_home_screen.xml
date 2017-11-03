@@ -74,11 +74,20 @@
         android:id="@+id/mapView"
         android:layout_width="350dp"
         android:layout_height="350dp"
-        android:layout_below="@+id/joinGame"
-        android:layout_marginTop="21dp"
-        android:layout_toStartOf="@+id/hostGame"
-        android:layout_toLeftOf="@+id/hostGame"
+        android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/joinGame"
         android:layout_alignEnd="@+id/joinGame" />
+
+    <Button
+        android:id="@+id/myGame"
+        android:layout_width="116dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/userProfileHome"
+        android:layout_alignStart="@+id/userProfileHome"
+        android:layout_below="@+id/hostGame"
+        android:backgroundTint="#ff3f9c"
+        android:onClick="myGame"
+        android:text="MY GAME"
+        android:textColor="#FFFFFF" />
 
 </RelativeLayout>

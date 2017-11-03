@@ -158,6 +158,12 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         finish();
     }
 
+    public void myGame(View view) {
+        Intent intent = new Intent(this, MyGameActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
 

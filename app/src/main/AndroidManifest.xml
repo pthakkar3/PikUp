@@ -3,6 +3,7 @@
     package="com.pikup">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,8 +24,13 @@
         <activity android:name=".ui.UserProfileActivity" />
         <activity android:name=".ui.ForgotPasswordActivity" />
         <activity android:name=".ui.HostActivity" />
-        <activity android:name=".ui.JoinListActivity"></activity>
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCUwbmjUyG9hRPR8oBI49OTk05befURONo"/>
+        <activity android:name=".ui.JoinListActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCUwbmjUyG9hRPR8oBI49OTk05befURONo" />
+
+        <activity android:name=".ui.MyGameActivity"></activity>
     </application>
 
 </manifest>
