@@ -16,8 +16,7 @@
         android:textColor="#FFFFFF"
         android:layout_alignBaseline="@+id/hostGame"
         android:layout_alignBottom="@+id/hostGame"
-        android:layout_alignRight="@+id/mapPic"
-        android:layout_alignEnd="@+id/mapPic" />
+        android:layout_toRightOf="@+id/hostGame" />
 
     <Button
         android:id="@+id/hostGame"
@@ -65,21 +64,21 @@
         android:layout_marginTop="15dp"
         android:backgroundTint="#ff3f9c"
         android:onClick="viewProfile"
-        android:text="User Profile"
+        android:text="Profile"
         android:textColor="#FFFFFF"
         android:layout_below="@+id/toBe"
         android:layout_toLeftOf="@+id/hostGame"
         android:layout_toStartOf="@+id/hostGame" />
 
-    <ImageView
-        android:id="@+id/mapPic"
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="350dp"
         android:layout_height="350dp"
         android:layout_below="@+id/joinGame"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="21dp"
-        android:adjustViewBounds="false"
-        android:background="@drawable/map"
-        android:cropToPadding="false" />
+        android:layout_toStartOf="@+id/hostGame"
+        android:layout_toLeftOf="@+id/hostGame"
+        android:layout_alignRight="@+id/joinGame"
+        android:layout_alignEnd="@+id/joinGame" />
 
 </RelativeLayout>
