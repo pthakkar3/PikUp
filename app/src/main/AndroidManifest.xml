@@ -30,7 +30,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCUwbmjUyG9hRPR8oBI49OTk05befURONo" />
 
-        <activity android:name=".ui.MyGameActivity"></activity>
+        <activity android:name=".ui.MyGameActivity" />
+        <activity android:name=".ui.GameDetailActivity"></activity>
     </application>
 
 </manifest>

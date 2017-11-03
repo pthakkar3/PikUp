@@ -55,6 +55,7 @@ public class listAdapter extends ArrayAdapter<Game> {
         TextView listDate = (TextView) listViewItem.findViewById(R.id.listDate);
 
         RatingBar listIntensityBar = (RatingBar) listViewItem.findViewById(R.id.listIntensityBar);
+        Button joinGame = (Button) listViewItem.findViewById(R.id.joinGame);
 
         java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
         java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
@@ -89,6 +90,19 @@ public class listAdapter extends ArrayAdapter<Game> {
 
         final String game_key = gameKey;
 
+        joinGame.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 List<String> editedList = game.getPlayerUIDList();
+                 editedList.add(mAuth.getCurrentUser().getUid());
+                 game.setPlayerUIDList((ArrayList<String>) editedList);
+                 mDatabase.child("gamesList").child(game_key).child("playerUIDList").setValue(editedList);
+                 String toastText = "You have successfully joined the " + game.getSport() + " game on " + game.getTimeOfGame().toString().substring(0, 10);
+                 Toast temp = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
+                 temp.setGravity(Gravity.CENTER,0,0);
+                 temp.show();
+             }
+         });
 
         return listViewItem;
     }
