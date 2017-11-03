@@ -137,6 +137,8 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
 
                 }
 
+
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Log.e(TAG, databaseError.getMessage());
@@ -176,6 +178,8 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
 
         sportSpinner.setOnItemSelectedListener(this);
         intensitySpinner.setOnItemSelectedListener(this);
+        locationSpinner.setOnItemSelectedListener(this);
+        playerSpinner.setOnItemSelectedListener(this);
 
     }
 
@@ -272,6 +276,7 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
             location.clear();
             location.add("-Select Location-");
             if (parent.getId() == sportSpinner.getId()) {
+
                 // If they selected a sport, then fill that spinner with a list of valid locations
                 for (SportsLocations s: lSportsLocations) {
                     // Log.v(TAG, "TEMP: " + temp + " SportsLocations: " + s.toString() + " comparison: " + (s.equals(temp)));
@@ -281,10 +286,10 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
                 }
 
                 // TODO: Make this less garbage by using global variables to prevent a waste of resources
-                ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_spinner_item, location);
-                locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                locationSpinner.setAdapter(locationAdapter);
+//                ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>(this,
+//                        android.R.layout.simple_spinner_item, location);
+//                locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                locationSpinner.setAdapter(locationAdapter);
 
                 spSelected = temp;
             }
@@ -318,7 +323,7 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
     private boolean fitsFilter(Game g) {
         if ((g.getSport().equals(spSelected) || spSelected.equals("-Select Sport-"))
             && (g.getLocationTitle().equals(loSelected) || loSelected.equals("-Select Location-"))
-            && (inSelected.equals(g.getIntensity()) || inSelected.equals("-Select Intensity-"))) {
+            && (inSelected.equals(Integer.toString(g.getIntensity())) || inSelected.equals("-Select Intensity-"))) {
             return true;
             //for each player in game g
             //check if player is type selected
