@@ -301,10 +301,10 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
         if (parent.getItemAtPosition(position) instanceof String){
             String temp = (String) parent.getItemAtPosition(position);
             // clear the list back to default, if a sport is selected then populate it
-            location.clear();
-            location.add("-Select Location-");
-            if (parent.getId() == sportSpinner.getId()) {
 
+            if (parent.getId() == sportSpinner.getId()) {
+                location.clear();
+                location.add("-Select Location-");
                 // If they selected a sport, then fill that spinner with a list of valid locations
                 for (SportsLocations s: lSportsLocations) {
                     // Log.v(TAG, "TEMP: " + temp + " SportsLocations: " + s.toString() + " comparison: " + (s.equals(temp)));
