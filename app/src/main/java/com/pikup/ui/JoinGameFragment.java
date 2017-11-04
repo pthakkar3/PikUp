@@ -2,18 +2,19 @@ package com.pikup.ui;
 
 
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
-import android.util.Log;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -25,7 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pikup.R;
 import com.pikup.model.Game;
-import com.pikup.model.Sports;
 import com.pikup.model.SportsLocations;
 import com.pikup.model.User;
 
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class JoinListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class JoinGameFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private FirebaseAuth mAuth;
     private DatabaseReference currentRef;
     private DatabaseReference mDatabase;
@@ -76,21 +76,28 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
     boolean isExclusive;
     boolean isStudent;
 
+    private View root;
+
+    public JoinGameFragment() {
+        //required empty constructor
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_join_list);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        root = inflater.inflate(R.layout.fragment_join_game, container, false);
+
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         currentRef = FirebaseDatabase.getInstance().getReference(gamesListURL);
-        listViewGame = (ListView) findViewById(R.id.listViewGame);
+        listViewGame = (ListView) root.findViewById(R.id.listViewGame);
         userUID = mAuth.getCurrentUser().getUid();
         gameList = new ArrayList<>();
 
-        sportSpinner = (Spinner) findViewById(R.id.sport_spinner);
-        locationSpinner = (Spinner) findViewById(R.id.location_spinner);
-        playerSpinner = (Spinner) findViewById(R.id.player_spinner);
-        intensitySpinner = (Spinner) findViewById(R.id.intensity_spinner);
+        sportSpinner = (Spinner) root.findViewById(R.id.sport_spinner);
+        locationSpinner = (Spinner) root.findViewById(R.id.location_spinner);
+        playerSpinner = (Spinner) root.findViewById(R.id.player_spinner);
+        intensitySpinner = (Spinner) root.findViewById(R.id.intensity_spinner);
 
         sport = new ArrayList<String>();
         location = new ArrayList<String>();
@@ -110,8 +117,6 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
         location.add("-Select Location-");
         player.add("-Select Player-");
         intensity.add("-Select Intensity-");
-
-
 
         DatabaseReference userRef = mDatabase.child("userList").child(mAuth.getCurrentUser().getUid());
         userRef.addValueEventListener(new ValueEventListener() {
@@ -137,8 +142,6 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
-
-
         intensity.add("1");
         intensity.add("2");
         intensity.add("3");
@@ -153,13 +156,13 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshotChunk: dataSnapshot.getChildren()) {
-                        JoinListActivity.this.lSportsLocations
+                        lSportsLocations
                                 .add(snapshotChunk.getValue(SportsLocations.class));
                     }
 
                     // This Adds all possible sports to the sport list.
                     for (SportsLocations s: lSportsLocations) {
-                         sport.add(s.getGame());
+                        sport.add(s.getGame());
                     }
 
                 }
@@ -174,30 +177,28 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
 
         } catch (NullPointerException ex) {
             Log.e(TAG, "database reference retrieved was null");
-            Intent intent = new Intent(this, HomeScreenActivity.class);
-            startActivity(intent);
-            finish();
+            Fragment fragment = new HomeScreenFragment();
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
         }
 
-
-
-        ArrayAdapter<String> sportAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> sportAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, sport);
         sportAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sportSpinner.setAdapter(sportAdapter);
 
-        ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, location);
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpinner.setAdapter(locationAdapter);
 
-        ArrayAdapter<String> playerAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> playerAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, player);
         playerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         playerSpinner.setAdapter(playerAdapter);
 
 
-        ArrayAdapter<String> intensityAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> intensityAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, intensity);
         intensityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         intensitySpinner.setAdapter(intensityAdapter);
@@ -208,10 +209,13 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
         locationSpinner.setOnItemSelectedListener(this);
         playerSpinner.setOnItemSelectedListener(this);
 
+        return root;
     }
 
+
+
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         currentRef = mDatabase.child(gamesListURL);
         currentRef.addValueEventListener(new ValueEventListener() {
@@ -231,7 +235,7 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
 
                 }
 
-                listAdapter adapter = new listAdapter(JoinListActivity.this, gameList, dataSnapshot);
+                JoinGameListAdapter adapter = new JoinGameListAdapter(getActivity(), gameList, dataSnapshot);
                 listViewGame.setAdapter(adapter);
 
                 isGameListEmpty();
@@ -249,21 +253,13 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
 
 
     }
-    @Override
-    public void onBackPressed()
-    {
-        super.onBackPressed();
-        startActivity(new Intent(JoinListActivity.this, HomeScreenActivity.class));
-        finish();
-    }
+
 
     private void isGameListEmpty() {
         if (!gamesExist) {
             AlertDialog.Builder builder;
-
-            builder = new AlertDialog.Builder(this);
+            builder = new AlertDialog.Builder(getActivity());
             // AlertDialog alert = builder.create();
-            if (!this.isFinishing()) {
             builder.setTitle("There aren't any games available right now")
                     .setMessage("Would you like to host your own?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -280,19 +276,19 @@ public class JoinListActivity extends AppCompatActivity implements AdapterView.O
                     })
                     .setIconAttribute(android.R.attr.alertDialogIcon)
                     .show();
-            }
         }
     }
 
     private void hostGame() {
-        startActivity(new Intent(getApplicationContext(), HostActivity.class));
-        finish();
+        Fragment fragment = new HostGameFragment();
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
     }
 
     private void homeScreen() {
-        Intent intent = new Intent(this, HomeScreenActivity.class);
-        startActivity(intent);
-        finish();
+        Fragment fragment = new HomeScreenFragment();
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
     }
 
 

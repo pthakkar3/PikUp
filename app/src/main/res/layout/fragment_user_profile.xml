@@ -37,7 +37,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="#ff3f9c"
-                    android:onClick="deleteAccount"
                     android:text="Delete Account"
                     android:textColor="#ffffff" />
             </LinearLayout>
@@ -227,14 +226,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="39dp"
                     android:background="#ff3f9c"
-                    android:onClick="saveUserProfile"
                     android:text="Save" />
 
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/profileBackButton"
-                    android:onClick="profileOnBack"
                     android:backgroundTint="@android:color/white"
                     android:text="Back" />
 

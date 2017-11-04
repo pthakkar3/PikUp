@@ -1,93 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.pikup.ui.HomeScreenActivity">
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/joinGame"
-        android:layout_width="116dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#ff3f9c"
-        android:onClick="listGame"
-        android:text="Join Game"
-        android:textColor="#FFFFFF"
-        android:layout_alignBaseline="@+id/hostGame"
-        android:layout_alignBottom="@+id/hostGame"
-        android:layout_toRightOf="@+id/hostGame" />
+    <FrameLayout
+        android:id="@+id/home_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <Button
-        android:id="@+id/hostGame"
-        android:layout_width="116dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#ff3f9c"
-        android:onClick="hostGame"
-        android:text="Host Game"
-        android:textColor="#FFFFFF"
-        android:layout_alignBaseline="@+id/userProfileHome"
-        android:layout_alignBottom="@+id/userProfileHome"
-        android:layout_centerHorizontal="true" />
+    <ListView
+        android:id="@+id/left_drawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="#111"/>
 
-    <TextView
-        android:id="@+id/toBe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/userProfileHome"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/userProfileHome"
-        android:layout_marginTop="16dp"
-        android:layout_toLeftOf="@+id/logOutHome"
-        android:layout_toStartOf="@+id/logOutHome"
-        android:text="Home Screen"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/logOutHome"
-        android:layout_width="116dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#ff3f9c"
-        android:onClick="logOut"
-        android:text="Log Out"
-        android:textColor="#FFFFFF"
-        android:layout_alignBaseline="@+id/toBe"
-        android:layout_alignBottom="@+id/toBe"
-        android:layout_toRightOf="@+id/hostGame"
-        android:layout_toEndOf="@+id/hostGame" />
+</android.support.v4.widget.DrawerLayout>
 
-    <Button
-        android:id="@+id/userProfileHome"
-        android:layout_width="116dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:backgroundTint="#ff3f9c"
-        android:onClick="viewProfile"
-        android:text="Profile"
-        android:textColor="#FFFFFF"
-        android:layout_below="@+id/toBe"
-        android:layout_toLeftOf="@+id/hostGame"
-        android:layout_toStartOf="@+id/hostGame" />
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/joinGame"
-        android:layout_alignEnd="@+id/joinGame" />
 
-    <Button
-        android:id="@+id/myGame"
-        android:layout_width="116dp"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/userProfileHome"
-        android:layout_alignStart="@+id/userProfileHome"
-        android:layout_below="@+id/hostGame"
-        android:backgroundTint="#ff3f9c"
-        android:onClick="myGame"
-        android:text="MY GAME"
-        android:textColor="#FFFFFF" />
 
-</RelativeLayout>
+

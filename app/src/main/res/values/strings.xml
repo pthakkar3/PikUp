@@ -2,4 +2,6 @@
     <string name="app_name">PikUp</string>
     <string name="title_activity_verify_email">VerifyEmail</string>
     <string name="title_activity_forgot_password">ForgotPassword</string>
+    <string name="open_drawer">Open Drawer</string>
+    <string name="close_drawer">Close Drawer</string>
 </resources>

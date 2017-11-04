@@ -1,11 +1,12 @@
 package com.pikup.ui;
 
-import android.app.ListActivity;
+import android.app.Fragment;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,12 +19,10 @@ import com.pikup.R;
 import com.pikup.model.Game;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-public class MyGameActivity extends AppCompatActivity { // AppCompatActivity
+public class MyGamesFragment extends Fragment { // AppCompatActivity
     private FirebaseAuth mAuth;
     private DatabaseReference currentRef;
 
@@ -33,19 +32,29 @@ public class MyGameActivity extends AppCompatActivity { // AppCompatActivity
     String userUID;
     Map<Integer, String> viewTohostUID;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_game);
-        mAuth = FirebaseAuth.getInstance();
-        currentRef = FirebaseDatabase.getInstance().getReference("gamesList");
-        listViewGame = (ListView) findViewById(R.id.listViewGame);
-        userUID = mAuth.getCurrentUser().getUid();
-        gameList = new ArrayList<>();
+    private View root;
+
+    public MyGamesFragment() {
+
     }
 
+    @Nullable
     @Override
-    protected void onStart() {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        root = inflater.inflate(R.layout.fragment_my_games, container, false);
+
+        mAuth = FirebaseAuth.getInstance();
+        currentRef = FirebaseDatabase.getInstance().getReference("gamesList");
+        listViewGame = (ListView) root.findViewById(R.id.listViewGame);
+        userUID = mAuth.getCurrentUser().getUid();
+        gameList = new ArrayList<>();
+
+        return root;
+    }
+
+
+    @Override
+    public void onStart() {
         super.onStart();
 
         currentRef.addValueEventListener(new ValueEventListener() {
@@ -60,7 +69,7 @@ public class MyGameActivity extends AppCompatActivity { // AppCompatActivity
                         gameList.add(game);
                     }
                 }
-                myGameListAdapter adapter = new myGameListAdapter(MyGameActivity.this, gameList, dataSnapshot);
+                myGameListAdapter adapter = new myGameListAdapter(getActivity(), gameList, dataSnapshot);
                 listViewGame.setAdapter(adapter);
             }
 
@@ -71,11 +80,4 @@ public class MyGameActivity extends AppCompatActivity { // AppCompatActivity
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(MyGameActivity.this, HomeScreenActivity.class));
-        finish();
-
-    }
 }

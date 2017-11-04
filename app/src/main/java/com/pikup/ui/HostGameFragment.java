@@ -3,30 +3,27 @@ package com.pikup.ui;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.icu.util.Calendar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,19 +31,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pikup.R;
 import com.pikup.model.Game;
-import com.pikup.model.Sports;
 import com.pikup.model.SportsLocations;
 import com.pikup.model.User;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class HostActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class HostGameFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -74,29 +67,42 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private boolean isHostStudent;
 
+    private View root;
+
+    public HostGameFragment() {
+        //required empty constructor
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_host);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        root = inflater.inflate(R.layout.fragment_host_game, container, false);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        Button datePickerButton = (Button) root.findViewById(R.id.datePickButton);
+        Button timePickerButton = (Button) root.findViewById(R.id.timePickButton);
+        Button hostButton = (Button) root.findViewById(R.id.hostGameButton);
+        Button hostBackButton = (Button) root.findViewById(R.id.hostGameBackButton);
+
+        datePickerButton.setOnClickListener(this);
+        timePickerButton.setOnClickListener(this);
+        hostButton.setOnClickListener(this);
+        hostBackButton.setOnClickListener(this);
+
         //timePicker = (TimePicker) findViewById(R.id.timePicker);
         //datePicker = (DatePicker) findViewById(R.id.datePicker);
-
 
         sportsLocationsList = new ArrayList<>();
         sportsList = new ArrayList<>();
         playersList = new ArrayList<>();
-        locationSpinner = (Spinner) findViewById(R.id.locationSpinner);
-        intensity = (RatingBar) findViewById(R.id.intensityBar);
-        numberOfPlayers = (NumberPicker) findViewById(R.id.numberOfPlayers);
-        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        locationSpinner = (Spinner) root.findViewById(R.id.locationSpinner);
+        intensity = (RatingBar) root.findViewById(R.id.intensityBar);
+        numberOfPlayers = (NumberPicker) root.findViewById(R.id.numberOfPlayers);
+        checkBox = (CheckBox) root.findViewById(R.id.checkBox);
         numberOfPlayers.setMinValue(0);
         numberOfPlayers.setMaxValue(30);
-
-
 
         /*
         sportsList.add("Basketball");
@@ -145,13 +151,14 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         // Create a database reference to the gameList folder
 
         // Get Sports List and Locations List from the Database
+
         try {
             currentRef = mDatabase.child(sportsListURL);
             currentRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshotChunk: dataSnapshot.getChildren()) {
-                        HostActivity.this.sportsLocationsList.add(snapshotChunk.getValue(SportsLocations.class));
+                        sportsLocationsList.add(snapshotChunk.getValue(SportsLocations.class));
                     }
 
                     for (SportsLocations s: sportsLocationsList) {
@@ -195,20 +202,34 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 
         } catch (NullPointerException ex) {
             Log.e(TAG, "database reference retrieved was null");
-            Intent intent = new Intent(this, HomeScreenActivity.class);
-            startActivity(intent);
-            finish();
+            Fragment fragment = new HomeScreenFragment();
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
         }
 
+        return root;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.datePickButton) {
+            showDatePicker(v);
+        } else if (v.getId() == R.id.timePickButton) {
+            showTimePicker(v);
+        } else if (v.getId() == R.id.hostGameButton) {
+            hostNewGame(v);
+        } else if (v.getId() == R.id.hostGameBackButton) {
+            cancelGame(v);
+        }
     }
 
     private void attachListenerToSpinner() {
         // Log.i(TAG, "Current Size of sportsLocationList: " + sportsLocationsList.size());
         // Log.i(TAG, "Current Size of sportsList: " + sportsList.size());
         // Populate the Sports dropdown with the Sports pulled from the database
-        sportSpinner = (Spinner) findViewById(R.id.sportSpinner);
+        sportSpinner = (Spinner) root.findViewById(R.id.sportSpinner);
         ArrayAdapter<String> sportsAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, sportsList);
+                getActivity(), android.R.layout.simple_spinner_item, sportsList);
         sportsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sportSpinner.setAdapter(sportsAdapter);
 
@@ -250,19 +271,19 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
         currentRef = mDatabase.child("gamesList");
         currentRef.push().setValue(newGame);
 
-        Toast.makeText(HostActivity.this,
+        Toast.makeText(getActivity(),
                 "Your game was hosted!",
                 Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(this, HomeScreenActivity.class);
-        startActivity(intent);
-        finish();
+        Fragment fragment = new HomeScreenFragment();
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
     }
 
     public void cancelGame(View view) {
-        Intent intent = new Intent(this, HomeScreenActivity.class);
-        startActivity(intent);
-        finish();
+        Fragment fragment = new HomeScreenFragment();
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
     }
 
 
@@ -285,7 +306,7 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
                     //ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     //        this, android.R.layout.simple_spinner_item, s.getLocations());
                     ArrayAdapter<String> sportsLocationsAdapter = new ArrayAdapter<>(
-                            this, android.R.layout.simple_spinner_item, s.getLocations());
+                            getActivity(), android.R.layout.simple_spinner_item, s.getLocations());
                     sportsLocationsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     locationSpinner.setAdapter(sportsLocationsAdapter);
                     locationSelected = (String) locationSpinner.getSelectedItem();
@@ -312,8 +333,8 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 //            final java.util.Calendar c = java.util.Calendar.getInstance();
 //            int hour = c.get(java.util.Calendar.HOUR_OF_DAY);
 //            int minute = c.get(java.util.Calendar.MINUTE);
-            int hour = HostActivity.cal.get(java.util.Calendar.HOUR_OF_DAY);
-            int minute = HostActivity.cal.get(java.util.Calendar.MINUTE);
+            int hour = cal.get(java.util.Calendar.HOUR_OF_DAY);
+            int minute = cal.get(java.util.Calendar.MINUTE);
 
             return new TimePickerDialog(getActivity(), this, hour, minute, android.text.format.DateFormat.is24HourFormat(getActivity()));
         }
@@ -342,10 +363,10 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
                 timePickButton.setText("Pick a time");
 
             } else {
-                HostActivity.cal.set(java.util.Calendar.HOUR_OF_DAY, hourOfDay);
-                HostActivity.cal.set(java.util.Calendar.MINUTE, minute);
-                HostActivity.cal.set(java.util.Calendar.SECOND, 0);
-                HostActivity.cal.set(java.util.Calendar.MILLISECOND, 0);
+                cal.set(java.util.Calendar.HOUR_OF_DAY, hourOfDay);
+                cal.set(java.util.Calendar.MINUTE, minute);
+                cal.set(java.util.Calendar.SECOND, 0);
+                cal.set(java.util.Calendar.MILLISECOND, 0);
 
                 // Set button text to selected time
                 Button timePickButton = (Button)this.getActivity().findViewById(R.id.timePickButton);
@@ -361,12 +382,9 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-//            final java.util.Calendar c = java.util.Calendar.getInstance();
-//            int hour = c.get(java.util.Calendar.HOUR_OF_DAY);
-//            int minute = c.get(java.util.Calendar.MINUTE);
-            int year = HostActivity.cal.get(java.util.Calendar.YEAR);
-            int month = HostActivity.cal.get(java.util.Calendar.MONTH);
-            int day = HostActivity.cal.get(java.util.Calendar.DAY_OF_MONTH);
+            int year = cal.get(java.util.Calendar.YEAR);
+            int month = cal.get(java.util.Calendar.MONTH);
+            int day = cal.get(java.util.Calendar.DAY_OF_MONTH);
 
             return new DatePickerDialog(getActivity(), this, year, month, day);
         }
@@ -393,9 +411,9 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
                 timePickButton.setText("Pick a date");
 
             } else {
-                HostActivity.cal.set(java.util.Calendar.YEAR, year);
-                HostActivity.cal.set(java.util.Calendar.MONTH, month);
-                HostActivity.cal.set(java.util.Calendar.DAY_OF_MONTH, dayOfMonth);
+                cal.set(java.util.Calendar.YEAR, year);
+                cal.set(java.util.Calendar.MONTH, month);
+                cal.set(java.util.Calendar.DAY_OF_MONTH, dayOfMonth);
 
                 // Set button text to selected date
                 Button datePickButton = (Button)this.getActivity().findViewById(R.id.datePickButton);
@@ -477,12 +495,5 @@ public class HostActivity extends AppCompatActivity implements AdapterView.OnIte
             test = new SportsLocations("Tennis", listOfLocations);
         currentRef.push().setValue(test);
     }
-    @Override
-    public void onBackPressed()
-    {
-        super.onBackPressed();
-        startActivity(new Intent(HostActivity.this, HomeScreenActivity.class));
-        finish();
 
-    }
 }

@@ -1,15 +1,18 @@
 package com.pikup.ui;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -24,27 +27,36 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pikup.R;
-import com.pikup.model.Game;
 import com.pikup.model.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Altan on 9/7/2017.
  */
 
-public class UserProfileActivity extends AppCompatActivity {
+public class UserProfileFragment extends Fragment implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private View root;
 
+    public UserProfileFragment() {
+        //required empty constructor
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        root = inflater.inflate(R.layout.fragment_user_profile, container, false);
+
+        Button delete = (Button) root.findViewById(R.id.accountDelete);
+        Button save = (Button) root.findViewById(R.id.userProfileSaveButton);
+        Button profileBack = (Button) root.findViewById(R.id.profileBackButton);
+        delete.setOnClickListener(this);
+        save.setOnClickListener(this);
+        profileBack.setOnClickListener(this);
+
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
 
         //Populate fields with data from the logged in user
         DatabaseReference userRef = mDatabase.child("userList").child(mAuth.getCurrentUser().getUid());
@@ -53,11 +65,11 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User currentUser = dataSnapshot.getValue(User.class);
 
-                EditText displayNameTextBox = (EditText) findViewById(R.id.userProfileDisplayName);
-                EditText phoneNumberTextBox = (EditText) findViewById(R.id.userProfilePhoneNumber);
-                EditText ageTextBox = (EditText) findViewById(R.id.userProfileAge);
-                RadioGroup selectGenderGroup = (RadioGroup) findViewById(R.id.userProfileGender);
-                RadioGroup selectAffiliationGroup = (RadioGroup) findViewById(R.id.userProfileAffiliation);
+                EditText displayNameTextBox = (EditText) root.findViewById(R.id.userProfileDisplayName);
+                EditText phoneNumberTextBox = (EditText) root.findViewById(R.id.userProfilePhoneNumber);
+                EditText ageTextBox = (EditText) root.findViewById(R.id.userProfileAge);
+                RadioGroup selectGenderGroup = (RadioGroup) root.findViewById(R.id.userProfileGender);
+                RadioGroup selectAffiliationGroup = (RadioGroup) root.findViewById(R.id.userProfileAffiliation);
 
                 if (currentUser != null) {
                     displayNameTextBox.setText(currentUser.getDisplayName());
@@ -88,18 +100,30 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
+        return root;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.accountDelete) {
+            deleteAccount(v);
+        } else if (v.getId() == R.id.userProfileSaveButton) {
+            saveUserProfile(v);
+        } else if (v.getId() == R.id.profileBackButton) {
+            profileOnBack(v);
+        }
     }
 
     public void saveUserProfile(View view) {
 
-        EditText displayNameTextBox = (EditText) findViewById(R.id.userProfileDisplayName);
-        EditText phoneNumberTextBox = (EditText) findViewById(R.id.userProfilePhoneNumber);
-        EditText ageTextBox = (EditText) findViewById(R.id.userProfileAge);
-        RadioGroup selectGenderGroup = (RadioGroup) findViewById(R.id.userProfileGender);
-        RadioGroup selectAffiliationGroup = (RadioGroup) findViewById(R.id.userProfileAffiliation);
+        EditText displayNameTextBox = (EditText) root.findViewById(R.id.userProfileDisplayName);
+        EditText phoneNumberTextBox = (EditText) root.findViewById(R.id.userProfilePhoneNumber);
+        EditText ageTextBox = (EditText) root.findViewById(R.id.userProfileAge);
+        RadioGroup selectGenderGroup = (RadioGroup) root.findViewById(R.id.userProfileGender);
+        RadioGroup selectAffiliationGroup = (RadioGroup) root.findViewById(R.id.userProfileAffiliation);
 
         if(displayNameTextBox.getText().toString().length() > 15) {
-            Toast.makeText(UserProfileActivity.this, "You can only have upto 15 characters in your name :(",
+            Toast.makeText(getActivity(), "You can only have upto 15 characters in your name :(",
                     Toast.LENGTH_LONG).show();
         } else {
             String displayName = displayNameTextBox.getText().toString();
@@ -125,49 +149,43 @@ public class UserProfileActivity extends AppCompatActivity {
 
             userRef.setValue(currentUser);
 
-            Toast.makeText(UserProfileActivity.this, "Your changes have been saved!",
+            Toast.makeText(getActivity(), "Your changes have been saved!",
                     Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, HomeScreenActivity.class);
-            startActivity(intent);
-            finish();
+            Fragment fragment = new HomeScreenFragment();
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
         }
 
     }
 
     public void profileOnBack(View view) {
-        Toast.makeText(UserProfileActivity.this, "You exited without saving your changes.",
+        Toast.makeText(getActivity(), "You exited without saving your changes.",
                 Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, HomeScreenActivity.class);
-        startActivity(intent);
-        finish();
-    }
-    @Override
-    public void onBackPressed()
-    {
-        super.onBackPressed();
-        startActivity(new Intent(UserProfileActivity.this, HomeScreenActivity.class));
-        finish();
+        Fragment fragment = new HomeScreenFragment();
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
 
     }
+
 
 
     public void deleteAccount(View view) {
         AlertDialog.Builder builder;
 
-        builder = new AlertDialog.Builder(this);
+        builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Delete Account")
                 .setMessage("Are you sure you wanna leave us? :(")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         deleting();
-                        Intent intent = new Intent(UserProfileActivity.this, WelcomeScreenActivity.class);
+                        Intent intent = new Intent(getActivity(), WelcomeScreenActivity.class);
                         startActivity(intent);
-                        finish();
+
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(UserProfileActivity.this, "We're glad you're staying :)",
+                        Toast.makeText(getActivity(), "We're glad you're staying :)",
                                 Toast.LENGTH_LONG).show();
                     }
                 })

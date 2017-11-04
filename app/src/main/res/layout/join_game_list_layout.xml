@@ -68,7 +68,7 @@
                 android:focusable="false"
                 android:onClick="joinExistedGame"
                 android:padding="10sp"
-                android:text="Join"></Button>
+                android:text="Join"/>
         </LinearLayout>
 
     </RelativeLayout>

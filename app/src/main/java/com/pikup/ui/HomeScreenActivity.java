@@ -1,206 +1,127 @@
 package com.pikup.ui;
 
-import android.Manifest;
+
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+
+import android.support.v4.widget.DrawerLayout;
+
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.RadioGroup;
+
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+
+import android.widget.ListView;
+
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.android.gms.location.LocationServices;
 import com.pikup.R;
-import com.pikup.model.User;
 
 
-public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+public class HomeScreenActivity extends AppCompatActivity {
 
-    private MapView mapView;
-    private GoogleMap map;
-    private LatLng userLatLng;
-
-    private GoogleApiClient mGoogleApiClient;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        MapsInitializer.initialize(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-        mapView = (MapView) findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
 
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        String[] drawerItems = {"Home", "Profile","My Games", "Host Game", "Join Game", "Logout"};
 
-                try {
-                    googleMap.setMyLocationEnabled(true);
-                    LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                    Criteria criteria = new Criteria();
-                    String provider = locationManager.getBestProvider(criteria, true);
-                    Location location = locationManager.getLastKnownLocation(provider);
-                    if (location != null) {
-                        double lat = location.getLatitude();
-                        double lng = location.getLongitude();
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, R.id.text1 ,drawerItems ));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-                        LatLng latLng = new LatLng(lat, lng);
-                        userLatLng = latLng;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
-                        googleMap.addMarker(new MarkerOptions().position(userLatLng));
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15));
-                    }
-                } catch (SecurityException e) {
-                    Log.e("ERROR:", e.toString());
-                }
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.string.open_drawer,  /* "open drawer" description for accessibility */
+                R.string.close_drawer  /* "close drawer" description for accessibility */
+        ) {
+            public void onDrawerClosed(View view) {
+                invalidateOptionsMenu();
+            }
 
-                mapView.onResume();
-        }});
+            public void onDrawerOpened(View drawerView) {
+                invalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
+        Fragment fragment = new HomeScreenFragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.home_frame, fragment).commit();
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
 
-        DatabaseReference userRef = mDatabase.child("userList").child(mAuth.getCurrentUser().getUid());
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User currentUser = dataSnapshot.getValue(User.class);
-                TextView t = (TextView) findViewById(R.id.toBe);
-
-                if (currentUser != null) {
-                    String tempText = currentUser.getDisplayName();
-                    t.setText("Welcome, " + tempText);
-                } else {
-                    t.setText("Welcome");
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+        return super.onOptionsItemSelected(item);
     }
 
-    protected void onStart() {
-        mGoogleApiClient.connect();
-        super.onStart();
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            TextView textView = (TextView) view.findViewById(R.id.text1);
+            String text = textView.getText().toString();
+            selectDrawerItem(text);
+        }
     }
 
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
-
-    public void viewProfile(View view) {
-        Intent intent = new Intent(this, UserProfileActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    public void logOut(View view) {
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(this, WelcomeScreenActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    public void hostGame(View view) {
-        Intent intent = new Intent(this, HostActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    public void listGame(View view) {
-        Intent intent = new Intent(this, JoinListActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    public void myGame(View view) {
-        Intent intent = new Intent(this, MyGameActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+    private void selectDrawerItem(String item) {
+        if (item.equals("Home")) {
+            Fragment fragment = new HomeScreenFragment();
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else if (item.equals("Profile")) {
+            Fragment fragment = new UserProfileFragment();
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else if(item.equals("My Games")) {
+            Fragment fragment = new MyGamesFragment();
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else if (item.equals("Join Game")){
+            Fragment fragment = new JoinGameFragment();
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else if (item.equals("Host Game")) {
+            Fragment fragment = new HostGameFragment();
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else if (item.equals("Logout")) {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(this, WelcomeScreenActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }
