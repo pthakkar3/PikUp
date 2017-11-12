@@ -1,12 +1,15 @@
 package com.pikup.ui;
 
 import android.app.Activity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -15,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.pikup.R;
 import com.pikup.model.Game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -49,6 +53,7 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         TextView listDate = (TextView) listViewItem.findViewById(R.id.listDate);
 
         RatingBar listIntensityBar = (RatingBar) listViewItem.findViewById(R.id.listIntensityBar);
+        Button quitGame = (Button) listViewItem.findViewById(R.id.quitGame);
 
         java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
         java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
@@ -81,10 +86,19 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         }
 
         final String game_key = gameKey;
-
-        //Log.i("JOIN - JoinGameListAdapter", "game Key: " + gameKey);
-        //currentRef.child(gameKey).removeValue();
-        //System.out.print(game_key);
+        quitGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<String> editedList = game.getPlayerUIDList();
+                editedList.remove(mAuth.getCurrentUser().getUid());
+                game.setPlayerUIDList((ArrayList<String>) editedList);
+                mDatabase.child("gamesList").child(game_key).child("playerUIDList").setValue(editedList);
+                String toastText = "You have successfully quited the " + game.getSport() + " game on " + game.getTimeOfGame().toString().substring(0, 10);
+                Toast temp = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
+                temp.setGravity(Gravity.CENTER,0,0);
+                temp.show();
+            }
+        });
 
         return listViewItem;
     }
