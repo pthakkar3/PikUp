@@ -35,6 +35,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.pikup.R;
 import com.pikup.model.User;
 
+import java.util.HashMap;
+
 import static android.content.Context.LOCATION_SERVICE;
 
 /**
@@ -76,24 +78,84 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
         mapView = (MapView) root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
 
+        DatabaseReference gamesRef = mDatabase.child("gamesList");
+        final HashMap<String, Integer> gameMap = new HashMap<>();;
+        gamesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    try {
+                        String locationTitle = child.child("locationTitle").getValue(String.class);
+                        if (locationTitle != null) {
+                            Integer locationCount = gameMap.get(locationTitle);
+                            if (locationCount == null) {
+                                gameMap.put(locationTitle, 1);
+                            }
+                        }
+
+                        LatLng CRCCourts = new LatLng(33.7757, -84.4040);
+                        LatLng CRCFields = new LatLng(33.7767, -84.4037);
+                        LatLng BurgerBowl = new LatLng(33.7790, -84.4028);
+                        LatLng TechGreen = new LatLng(33.7747, -84.3973);
+                        LatLng PetersParking = new LatLng(33.7753, -84.3936);
+                        LatLng NorthAveGym = new LatLng(33.7700, -84.3911);
+
+                        if (gameMap.get("CRC Fields") != null) {
+                            map.addMarker(new MarkerOptions().position(CRCFields).title("CRC Fields").snippet("Games Available"));
+                        }
+
+                        if (gameMap.get("CRC 4th floor Courts") != null) {
+                            map.addMarker(new MarkerOptions().position(CRCCourts).title("CRC Courts").snippet("Games Available"));
+                        }
+
+                        if (gameMap.get("Burger Bowl") != null) {
+                            map.addMarker(new MarkerOptions().position(BurgerBowl).title("Burger Bowl").snippet("Games Available"));
+                        }
+
+                        if (gameMap.get("Tech Green") != null) {
+                            map.addMarker(new MarkerOptions().position(TechGreen).title("Tech Green").snippet("Games Available"));
+                        }
+
+                        if (gameMap.get("Peters Parking Deck") != null) {
+                            map.addMarker(new MarkerOptions().position(PetersParking).title("Peters Parking Deck").snippet("Games Available"));
+                        }
+
+                        if (gameMap.get("North Avenue Gym") != null || gameMap.get("North Avenue Courtyard") != null) {
+                            map.addMarker(new MarkerOptions().position(NorthAveGym).title("North Avenue Gym/Courtyard").snippet("Games Available"));
+                        }
+
+
+
+                        Log.e("TEST1:", gameMap.toString());
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        Log.e("TEST:", gameMap.toString());
+
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
 
                 try {
+                    map = googleMap;
                     googleMap.setMyLocationEnabled(true);
                     LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
                     Criteria criteria = new Criteria();
                     String provider = locationManager.getBestProvider(criteria, true);
                     Location location = locationManager.getLastKnownLocation(provider);
                     if (location != null) {
-                        double lat = location.getLatitude();
-                        double lng = location.getLongitude();
-
-                        LatLng latLng = new LatLng(lat, lng);
+                        LatLng latLng = new LatLng(33.7762, -84.3981);
                         userLatLng = latLng;
-
-                        googleMap.addMarker(new MarkerOptions().position(userLatLng));
+                        //googleMap.addMarker(new MarkerOptions().position(userLatLng));
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15));
                     }
                 } catch (SecurityException e) {
