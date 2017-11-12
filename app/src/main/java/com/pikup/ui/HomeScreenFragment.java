@@ -178,7 +178,7 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User currentUser = dataSnapshot.getValue(User.class);
-                TextView t = (TextView) getView().findViewById(R.id.toBe);
+                TextView t = (TextView) root.findViewById(R.id.toBe);
 
                 if (currentUser != null) {
                     String tempText = currentUser.getDisplayName();
