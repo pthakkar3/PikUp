@@ -19,7 +19,6 @@ import com.pikup.R;
 import com.pikup.model.Game;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 
@@ -90,6 +89,9 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         quitGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                List<String> editedList = game.getPlayerUIDList();
+                editedList.remove(mAuth.getCurrentUser().getUid());
+                game.setPlayerUIDList((ArrayList<String>) editedList);
                 mDatabase.child("gamesList").child(game_key).child("playerUIDList").setValue(editedList);
                 String toastText = "You have successfully quited the " + game.getSport() + " game on " + game.getTimeOfGame().toString().substring(0, 10);
                 Toast temp = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
