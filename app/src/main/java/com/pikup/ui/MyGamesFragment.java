@@ -69,8 +69,10 @@ public class MyGamesFragment extends Fragment { // AppCompatActivity
                         gameList.add(game);
                     }
                 }
-                myGameListAdapter adapter = new myGameListAdapter(getActivity(), gameList, dataSnapshot);
-                listViewGame.setAdapter(adapter);
+                if (getActivity()!=null) {
+                    myGameListAdapter adapter = new myGameListAdapter(getActivity(), gameList, dataSnapshot);
+                    listViewGame.setAdapter(adapter);
+                }
             }
 
             @Override

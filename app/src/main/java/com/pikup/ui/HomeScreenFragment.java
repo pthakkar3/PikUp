@@ -151,12 +151,14 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
                     LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
                     Criteria criteria = new Criteria();
                     String provider = locationManager.getBestProvider(criteria, true);
-                    Location location = locationManager.getLastKnownLocation(provider);
-                    if (location != null) {
-                        LatLng latLng = new LatLng(33.7762, -84.3981);
-                        userLatLng = latLng;
-                        //googleMap.addMarker(new MarkerOptions().position(userLatLng));
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15));
+                    if (provider !=null) {
+                        Location location = locationManager.getLastKnownLocation(provider);
+                        if (location != null) {
+                            LatLng latLng = new LatLng(33.7762, -84.3981);
+                            userLatLng = latLng;
+                            //googleMap.addMarker(new MarkerOptions().position(userLatLng));
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15));
+                        }
                     }
                 } catch (SecurityException e) {
                     Log.e("ERROR:", e.toString());

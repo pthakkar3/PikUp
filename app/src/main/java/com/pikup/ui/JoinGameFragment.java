@@ -234,10 +234,10 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
                     }
 
                 }
-
-                JoinGameListAdapter adapter = new JoinGameListAdapter(getActivity(), gameList, dataSnapshot);
-                listViewGame.setAdapter(adapter);
-
+                if (getActivity()!=null) {
+                    JoinGameListAdapter adapter = new JoinGameListAdapter(getActivity(), gameList, dataSnapshot);
+                    listViewGame.setAdapter(adapter);
+                }
                 isGameListEmpty();
 
             }
