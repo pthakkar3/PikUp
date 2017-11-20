@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.pikup.Manifest;
 import com.pikup.R;
 import com.pikup.model.User;
 
@@ -124,9 +126,6 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
                             map.addMarker(new MarkerOptions().position(NorthAveGym).title("North Avenue Gym/Courtyard").snippet("Games Available"));
                         }
 
-
-
-                        Log.e("TEST1:", gameMap.toString());
                     } catch (Exception e) {
 
                     }
@@ -147,7 +146,7 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
 
                 try {
                     map = googleMap;
-                    googleMap.setMyLocationEnabled(true);
+                    //googleMap.setMyLocationEnabled(true);
                     LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
                     Criteria criteria = new Criteria();
                     String provider = locationManager.getBestProvider(criteria, true);
@@ -161,7 +160,8 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
                         }
                     }
                 } catch (SecurityException e) {
-                    Log.e("ERROR:", e.toString());
+                    System.out.println(e.toString());
+
                 }
 
                 mapView.onResume();
