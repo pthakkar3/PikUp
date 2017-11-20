@@ -41,7 +41,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        String[] drawerItems = {"Home", "Profile","My Games", "Host Game", "Join Game", "Logout"};
+        String[] drawerItems = {"Home", "Profile","My Games", "Host Game", "Join Game", "Contact Us", "Logout"};
 
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, R.id.text1 ,drawerItems ));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -114,6 +114,11 @@ public class HomeScreenActivity extends AppCompatActivity {
             mDrawerLayout.closeDrawer(mDrawerList);
         } else if (item.equals("Host Game")) {
             Fragment fragment = new HostGameFragment();
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else if (item.equals("Contact Us")) {
+            Fragment fragment = new ContactUsFragment();
             FragmentManager fm = getFragmentManager();
             fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
             mDrawerLayout.closeDrawer(mDrawerList);

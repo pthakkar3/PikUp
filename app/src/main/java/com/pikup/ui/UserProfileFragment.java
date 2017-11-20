@@ -123,7 +123,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
         RadioGroup selectAffiliationGroup = (RadioGroup) root.findViewById(R.id.userProfileAffiliation);
 
         if(displayNameTextBox.getText().toString().length() > 15) {
-            Toast.makeText(getActivity(), "You can only have upto 15 characters in your name :(",
+            Toast.makeText(getActivity(), "You can only have up to 15 characters in your name :(",
                     Toast.LENGTH_LONG).show();
         } else {
             String displayName = displayNameTextBox.getText().toString();
