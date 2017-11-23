@@ -46,6 +46,13 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
     private final String sportsListURL = "sportsList/";
     private final String gamesListURL = "gamesList/";
 
+
+    private final String spSel = "Any Sport";
+    private final String loSel = "Any Location";
+    private final String inSel = "Any Intensity";
+    private final String plSel = "Any Player";
+
+
     private boolean gamesExist;
 
     ExpandableListView filterBy;
@@ -107,16 +114,16 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
 
         //populating the spinners
 
-        spSelected = "-Select Sport-";
-        loSelected = "-Select Location-";
-        inSelected = "-Select Intensity-";
-        plSelected = "-Select Player-";
+        spSelected = spSel;
+        loSelected = loSel;
+        inSelected = inSel;
+        plSelected = plSel;
 
 
-        sport.add("-Select Sport-");
-        location.add("-Select Location-");
-        player.add("-Select Player-");
-        intensity.add("-Select Intensity-");
+        sport.add(spSel);
+        location.add(loSel);
+        player.add(plSel);
+        intensity.add(inSel);
 
         DatabaseReference userRef = mDatabase.child("userList").child(mAuth.getCurrentUser().getUid());
         userRef.addValueEventListener(new ValueEventListener() {
@@ -300,7 +307,7 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
 
             if (parent.getId() == sportSpinner.getId()) {
                 location.clear();
-                location.add("-Select Location-");
+                location.add(loSel);
                 // If they selected a sport, then fill that spinner with a list of valid locations
                 for (SportsLocations s: lSportsLocations) {
                     // Log.v(TAG, "TEMP: " + temp + " SportsLocations: " + s.toString() + " comparison: " + (s.equals(temp)));
@@ -319,7 +326,7 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
             }
             if (parent.getId() == intensitySpinner.getId()) {
                 inSelected = temp;
-                isExclusive = !temp.equals("-Select Player-");
+                isExclusive = !temp.equals(plSel);
             }
 
         }
@@ -331,19 +338,19 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        spSelected = "-Select Sport-";
-        loSelected = "-Select Location-";
-        inSelected = "-Select Intensity-";
-        plSelected = "-Select Player-";
+        spSelected = spSel;
+        loSelected = loSel;
+        inSelected = inSel;
+        plSelected = plSel;
     }
 
 
     //TODO: add the logic for player type
     private boolean fitsFilter(Game g) {
-        if ((g.getSport().equals(spSelected) || spSelected.equals("-Select Sport-"))
-            && (g.getLocationTitle().equals(loSelected) || loSelected.equals("-Select Location-"))
-            && (inSelected.equals(Integer.toString(g.getIntensity())) || inSelected.equals("-Select Intensity-"))) {
-            if ((isExclusive && (isStudent == g.getIsHostStudent())) || plSelected.equals("-Select Player-")) {
+        if ((g.getSport().equals(spSelected) || spSelected.equals(spSel))
+            && (g.getLocationTitle().equals(loSelected) || loSelected.equals(loSel))
+            && (inSelected.equals(Integer.toString(g.getIntensity())) || inSelected.equals(inSel))) {
+            if ((isExclusive && (isStudent == g.getIsHostStudent())) || plSelected.equals(plSel)) {
                 return true;
             }
         }
