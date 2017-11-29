@@ -255,10 +255,6 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
             }
         });
 
-
-
-
-
     }
 
 

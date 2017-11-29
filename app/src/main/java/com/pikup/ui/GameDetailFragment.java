@@ -1,21 +1,24 @@
 package com.pikup.ui;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.location.Criteria;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,52 +36,77 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.pikup.Manifest;
 import com.pikup.R;
+
+import com.pikup.R;
+import com.pikup.model.Game;
 import com.pikup.model.User;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-/**
- * Created by pranshav on 11/3/2017.
- */
-
-public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
-
+public class GameDetailFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+    private Activity context;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private MapView mapView;
+    private View root;
+    private MapView mapViewTwo;
     private GoogleMap map;
     private LatLng userLatLng;
 
     private GoogleApiClient mGoogleApiClient;
 
-    private View root;
-
-    public HomeScreenFragment() {
-        //required empty constructor for fragment subclasses
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        root = inflater.inflate(R.layout.fragment_home, container, false);
+        root = inflater.inflate(R.layout.fragment_game_detail, container, false);
 
-        Button hostGame = (Button) root.findViewById(R.id.hostGame);
-        Button joinGame = (Button) root.findViewById(R.id.joinGame);
-        Button myGames = (Button) root.findViewById(R.id.myGames);
-        hostGame.setOnClickListener(this);
-        joinGame.setOnClickListener(this);
-        myGames.setOnClickListener(this);
+        TextView listSport = (TextView) root.findViewById(R.id.detailSport);
+        TextView listLocation = (TextView) root.findViewById(R.id.detailLocation);
+        TextView listTime = (TextView) root.findViewById(R.id.detailTime);
+        TextView listDate = (TextView) root.findViewById(R.id.detailDate);
+        RatingBar listIntensityBar = (RatingBar) root.findViewById(R.id.listIntensityBar);
+        final TextView hostName = (TextView) root.findViewById(R.id.detailHost);
+        final TextView hostNumber = (TextView) root.findViewById(R.id.detailHostNum);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         MapsInitializer.initialize(this.getActivity());
 
-        mapView = (MapView) root.findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
+        mapViewTwo = (MapView) root.findViewById(R.id.mapView2);
+        mapViewTwo.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+        String sportType = args.getString("sport");
+        String location = args.getString("location");
+        String time = args.getString("time");
+        String date = args.getString("date");
+        Float intensity = args.getFloat("intensity");
+        String hostID = args.getString("hostID");
+        final String gameID = args.getString("gameID");
+
+        listSport.setText(sportType);
+        listTime.setText(time);
+        listDate.setText(date);
+        listLocation.setText(location);
+        listIntensityBar.setRating(intensity);
+
+        DatabaseReference hostRef = mDatabase.child("userList").child(hostID);
+        hostRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User hostUser = dataSnapshot.getValue(User.class);
+                hostName.setText("Host: " + hostUser.getDisplayName());
+                hostNumber.setText("Contact Number: " + hostUser.getPhoneNumber().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         DatabaseReference gamesRef = mDatabase.child("gamesList");
         final HashMap<String, Integer> gameMap = new HashMap<>();;
@@ -87,11 +115,13 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     try {
-                        String locationTitle = child.child("locationTitle").getValue(String.class);
-                        if (locationTitle != null) {
-                            Integer locationCount = gameMap.get(locationTitle);
-                            if (locationCount == null) {
-                                gameMap.put(locationTitle, 1);
+                        if(child.getKey().equals(gameID)) {
+                            String locationTitle = child.child("locationTitle").getValue(String.class);
+                            if (locationTitle != null) {
+                                Integer locationCount = gameMap.get(locationTitle);
+                                if (locationCount == null) {
+                                    gameMap.put(locationTitle, 1);
+                                }
                             }
                         }
 
@@ -138,9 +168,7 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
             }
         });
 
-        Log.e("TEST:", gameMap.toString());
-
-        mapView.getMapAsync(new OnMapReadyCallback() {
+        mapViewTwo.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
 
@@ -157,7 +185,7 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
 
                 }
 
-                mapView.onResume();
+                mapViewTwo.onResume();
             }});
 
         if (mGoogleApiClient == null) {
@@ -168,48 +196,7 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
                     .build();
         }
 
-        DatabaseReference userRef = mDatabase.child("userList").child(mAuth.getCurrentUser().getUid());
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User currentUser = dataSnapshot.getValue(User.class);
-                TextView t = (TextView) root.findViewById(R.id.toBe);
-
-                if (currentUser != null) {
-                    String tempText = currentUser.getDisplayName();
-                    t.setText("Welcome, " + tempText);
-                } else {
-                    t.setText("Welcome");
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
         return root;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.hostGame){
-            Fragment fragment = new HostGameFragment();
-            FragmentManager fm = getFragmentManager();
-            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
-
-        } else if (v.getId() == R.id.joinGame) {
-            Fragment fragment = new JoinGameFragment();
-            FragmentManager fm = getFragmentManager();
-            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
-
-        } else if (v.getId() == R.id.myGames) {
-            Fragment fragment = new MyGamesFragment();
-            FragmentManager fm = getFragmentManager();
-            fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
-        }
     }
 
     @Override
@@ -224,20 +211,13 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
         super.onStop();
     }
 
-    //required methods for interfaces
-
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    public void onLocationChanged(Location location) {
 
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onStatusChanged(String provider, int status, Bundle extras) {
 
     }
 
@@ -252,17 +232,22 @@ public class HomeScreenFragment extends Fragment implements OnMapReadyCallback, 
     }
 
     @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
+    public void onMapReady(GoogleMap googleMap) {
 
     }
 

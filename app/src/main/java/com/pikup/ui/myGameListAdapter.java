@@ -1,6 +1,9 @@
 package com.pikup.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,14 +57,11 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         TextView listLocation = (TextView) listViewItem.findViewById(R.id.listLocation);
         TextView listTime = (TextView) listViewItem.findViewById(R.id.listTime);
         TextView listDate = (TextView) listViewItem.findViewById(R.id.listDate);
-        final TextView hostName = (TextView) listViewItem.findViewById(R.id.myGameHostName);
-        final TextView hostNumber = (TextView) listViewItem.findViewById(R.id.myGameHostNumber);
-
         RatingBar listIntensityBar = (RatingBar) listViewItem.findViewById(R.id.listIntensityBar);
         Button quitGame = (Button) listViewItem.findViewById(R.id.quitGame);
 
-        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
-        java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
+        final java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
+        final java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
         final Game game = gameList.get(position);
         String gameKey = "";
 
@@ -77,27 +77,10 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         currentRef = mDatabase.child("gamesList");
 
-        DatabaseReference hostRef = mDatabase.child("userList").child(game.getHostUID());
-        hostRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User hostUser = dataSnapshot.getValue(User.class);
-                hostName.setText("Host: " + hostUser.getDisplayName());
-                hostNumber.setText("Contact Number: " + hostUser.getPhoneNumber().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
         //final String game_key = mDatabase.child("gamesList").push().getKey();
         //currentRef.child(gameKey).removeValue();
         //System.out.print("Game selected: " + gameKey);
 
-
-        // TODO: Fix all the potato code (sorry)
         for (DataSnapshot gameSnapshot : gamesList.getChildren()) {
             Game g = gameSnapshot.getValue(Game.class);
             if (g.equals(game)) {
@@ -119,6 +102,24 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
                 Toast temp = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
                 temp.setGravity(Gravity.CENTER,0,0);
                 temp.show();
+            }
+        });
+
+        listViewItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("sport", game.getSport());
+                bundle.putString("location", game.getLocationTitle());
+                bundle.putString("time", timeFormat.format(game.getTimeOfGame()));
+                bundle.putString("date", dateFormat.format(game.getTimeOfGame()));
+                bundle.putFloat("intensity", game.getIntensity());
+                bundle.putString("hostID", game.getHostUID());
+                bundle.putString("gameID", game_key);
+                Fragment fragment = new GameDetailFragment();
+                fragment.setArguments(bundle);
+                FragmentManager fm = ((Activity)context).getFragmentManager();
+                fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
             }
         });
 
