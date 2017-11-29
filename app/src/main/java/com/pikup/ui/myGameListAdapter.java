@@ -13,10 +13,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.pikup.R;
 import com.pikup.model.Game;
+import com.pikup.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +54,8 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         TextView listLocation = (TextView) listViewItem.findViewById(R.id.listLocation);
         TextView listTime = (TextView) listViewItem.findViewById(R.id.listTime);
         TextView listDate = (TextView) listViewItem.findViewById(R.id.listDate);
+        final TextView hostName = (TextView) listViewItem.findViewById(R.id.myGameHostName);
+        final TextView hostNumber = (TextView) listViewItem.findViewById(R.id.myGameHostNumber);
 
         RatingBar listIntensityBar = (RatingBar) listViewItem.findViewById(R.id.listIntensityBar);
         Button quitGame = (Button) listViewItem.findViewById(R.id.quitGame);
@@ -59,6 +64,8 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
         final Game game = gameList.get(position);
         String gameKey = "";
+
+
 
         cal.setTime(game.getTimeOfGame());
         listSport.setText(game.getSport());
@@ -69,6 +76,21 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         currentRef = mDatabase.child("gamesList");
+
+        DatabaseReference hostRef = mDatabase.child("userList").child(game.getHostUID());
+        hostRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User hostUser = dataSnapshot.getValue(User.class);
+                hostName.setText("Host: " + hostUser.getDisplayName());
+                hostNumber.setText("Contact Number: " + hostUser.getPhoneNumber().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         //final String game_key = mDatabase.child("gamesList").push().getKey();
         //currentRef.child(gameKey).removeValue();
