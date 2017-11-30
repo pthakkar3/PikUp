@@ -1,6 +1,9 @@
 package com.pikup.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,8 +56,8 @@ public class JoinGameListAdapter extends ArrayAdapter<Game> {
         RatingBar listIntensityBar = (RatingBar) listViewItem.findViewById(R.id.listIntensityBar);
         Button joinGame = (Button) listViewItem.findViewById(R.id.joinGame);
 
-        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
-        java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
+        final java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
+        final java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
         final Game game = gameList.get(position);
         String gameKey = "";
 
@@ -100,7 +103,24 @@ public class JoinGameListAdapter extends ArrayAdapter<Game> {
              }
          });
 
+        listViewItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("sport", game.getSport());
+                bundle.putString("location", game.getLocationTitle());
+                bundle.putString("time", timeFormat.format(game.getTimeOfGame()));
+                bundle.putString("date", dateFormat.format(game.getTimeOfGame()));
+                bundle.putFloat("intensity", game.getIntensity());
+                bundle.putString("hostID", game.getHostUID());
+                bundle.putString("gameID", game_key);
+                Fragment fragment = new GameDetailFragment();
+                fragment.setArguments(bundle);
+                FragmentManager fm = ((Activity)context).getFragmentManager();
+                fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
+            }
+        });
+
         return listViewItem;
     }
-
 }

@@ -1,6 +1,9 @@
 package com.pikup.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +16,10 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.pikup.R;
 import com.pikup.model.Game;
 import com.pikup.model.User;
@@ -52,14 +57,15 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         TextView listLocation = (TextView) listViewItem.findViewById(R.id.listLocation);
         TextView listTime = (TextView) listViewItem.findViewById(R.id.listTime);
         TextView listDate = (TextView) listViewItem.findViewById(R.id.listDate);
-
         RatingBar listIntensityBar = (RatingBar) listViewItem.findViewById(R.id.listIntensityBar);
         Button quitGame = (Button) listViewItem.findViewById(R.id.quitGame);
 
-        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
-        java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
+        final java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
+        final java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
         final Game game = gameList.get(position);
         String gameKey = "";
+
+
 
         cal.setTime(game.getTimeOfGame());
         listSport.setText(game.getSport());
@@ -96,6 +102,24 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
                 Toast temp = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
                 temp.setGravity(Gravity.CENTER,0,0);
                 temp.show();
+            }
+        });
+
+        listViewItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("sport", game.getSport());
+                bundle.putString("location", game.getLocationTitle());
+                bundle.putString("time", timeFormat.format(game.getTimeOfGame()));
+                bundle.putString("date", dateFormat.format(game.getTimeOfGame()));
+                bundle.putFloat("intensity", game.getIntensity());
+                bundle.putString("hostID", game.getHostUID());
+                bundle.putString("gameID", game_key);
+                Fragment fragment = new GameDetailFragment();
+                fragment.setArguments(bundle);
+                FragmentManager fm = ((Activity)context).getFragmentManager();
+                fm.beginTransaction().replace(R.id.home_frame, fragment).commit();
             }
         });
 
