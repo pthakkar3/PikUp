@@ -437,12 +437,7 @@ public class HostGameFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     public void showHelp(View view) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setPositiveButton("OK",
-                DialogInterface.OnClickListener listener);
-        alertDialogBuilder.setNegativeButton(CharSequence text,
-                DialogInterface.OnClickListener listener);
-        AlertDialog alertDialog = alertDialogBuilder.create();
+
 
     }
 
