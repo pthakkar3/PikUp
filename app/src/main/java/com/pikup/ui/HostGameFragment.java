@@ -1,11 +1,13 @@
 package com.pikup.ui;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.util.Log;
@@ -433,6 +435,18 @@ public class HostGameFragment extends Fragment implements AdapterView.OnItemSele
         DialogFragment fragment = new DatePickerFragment();
         fragment.show(getFragmentManager(), "datePicker");
     }
+
+    public void showHelp(View view) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setPositiveButton("OK",
+                DialogInterface.OnClickListener listener);
+        alertDialogBuilder.setNegativeButton(CharSequence text,
+                DialogInterface.OnClickListener listener);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+    }
+
+
 
     /**
      * Super secret developer code used to populate the database for the first time

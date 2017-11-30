@@ -100,7 +100,9 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     });
+            
         }
+
     }
 
     public void cancelLogIn(View view) {

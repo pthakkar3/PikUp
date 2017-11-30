@@ -113,7 +113,6 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
         lSportsLocations = new ArrayList<SportsLocations>();
 
         //populating the spinners
-
         spSelected = spSel;
         loSelected = loSel;
         inSelected = inSel;
@@ -130,7 +129,6 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User currentUser = dataSnapshot.getValue(User.class);
-
                 if (currentUser != null) {
                     if (currentUser.getIsStudent()) {
                         player.add("Students Only");
@@ -140,7 +138,6 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
                         isStudent = false;
                     }
                 }
-
             }
 
             @Override
@@ -246,7 +243,6 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
                     listViewGame.setAdapter(adapter);
                 }
                 isGameListEmpty();
-
             }
 
             @Override
@@ -345,7 +341,6 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
     }
 
 
-    //TODO: add the logic for player type
     private boolean fitsFilter(Game g) {
         if ((g.getSport().equals(spSelected) || spSelected.equals(spSel))
             && (g.getLocationTitle().equals(loSelected) || loSelected.equals(loSel))
@@ -356,6 +351,5 @@ public class JoinGameFragment extends Fragment implements AdapterView.OnItemSele
         }
         
         return false;
-
     }
 }

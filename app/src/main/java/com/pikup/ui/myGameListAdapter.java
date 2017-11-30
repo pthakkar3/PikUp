@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.pikup.R;
 import com.pikup.model.Game;
+import com.pikup.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,18 +71,11 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         currentRef = mDatabase.child("gamesList");
 
-        //final String game_key = mDatabase.child("gamesList").push().getKey();
-        //currentRef.child(gameKey).removeValue();
-        //System.out.print("Game selected: " + gameKey);
 
-
-        // TODO: Fix all the potato code (sorry)
         for (DataSnapshot gameSnapshot : gamesList.getChildren()) {
             Game g = gameSnapshot.getValue(Game.class);
             if (g.equals(game)) {
                 gameKey = gameSnapshot.getKey();
-                //Log.i("JOIN - JoinGameListAdapter", "the games were equal");
-
             }
         }
 
@@ -90,9 +84,14 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
             @Override
             public void onClick(View view) {
                 List<String> editedList = game.getPlayerUIDList();
-                editedList.remove(mAuth.getCurrentUser().getUid());
+                String user = mAuth.getCurrentUser().getUid();
+                editedList.remove(user);
                 game.setPlayerUIDList((ArrayList<String>) editedList);
-                mDatabase.child("gamesList").child(game_key).child("playerUIDList").setValue(editedList);
+                if (editedList.size() == 0 || game.getHostUID().equals(user)) {
+                    mDatabase.child("gamesList").child(game_key).removeValue();
+                } else {
+                    mDatabase.child("gamesList").child(game_key).child("playerUIDList").setValue(editedList);
+                }
                 String toastText = "You have successfully quited the " + game.getSport() + " game on " + game.getTimeOfGame().toString().substring(0, 10);
                 Toast temp = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
                 temp.setGravity(Gravity.CENTER,0,0);

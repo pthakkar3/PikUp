@@ -156,19 +156,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <Button
+                    android:id="@+id/helpButton"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_toEndOf="@+id/intensityBar"
+                    android:layout_toRightOf="@+id/intensityBar"
+                    android:layout_weight="1"
+                    android:background="@drawable/ic_help_outline_black_24dp" />
+
                 <TextView
                     android:id="@+id/intensityText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
+                    android:layout_weight="1"
                     android:text="Intensity" />
 
                 <RatingBar
                     android:id="@+id/intensityBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true" />
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_weight="1" />
 
             </RelativeLayout>
 

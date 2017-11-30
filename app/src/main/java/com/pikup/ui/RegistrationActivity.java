@@ -95,10 +95,8 @@ public class RegistrationActivity extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            //Log.d(TAG, task.getResult().toString());
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
                             if (task.isSuccessful()) {
-                                // TODO: Fix this!
                                 Log.d(TAG, "Successful registration");
                                 sendEmail();
                             } else {
@@ -108,24 +106,9 @@ public class RegistrationActivity extends AppCompatActivity {
                                 Toast.makeText(RegistrationActivity.this, "Firebase Authentification failed"
                                         , Toast.LENGTH_SHORT).show();
                             }
-                            /* commented out poo-poo code
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(RegistrationActivity.this, "Firebase Authentification failed",
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
-                                Intent intent = new Intent(RegistrationActivity.this, HomeScreenActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                            */
+
                         }
                     });
-
-
-            // TODO: Display the wait for verification screen
-            //       Once properly verified go to the Home screen
-            // TODO: Delete the user after a certain amount of time if the email is not verified
-
         }
     }
 
@@ -140,7 +123,6 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private void sendEmail() {
         final FirebaseUser user = mAuth.getCurrentUser();
-        // TODO: Display Error
         if (user == null) { return; }
         user.sendEmailVerification().addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
@@ -150,12 +132,6 @@ public class RegistrationActivity extends AppCompatActivity {
                             "Verification email sent to " + user.getEmail(),
                             Toast.LENGTH_SHORT).show();
 
-                    /*
-                    Intent intent = new Intent(RegistrationActivity.this, VerifyEmail.class);
-
-                    startActivity(intent);
-                    finish();
-                    */
                 } else {
                     Log.e(TAG, "sendEmailVerification", task.getException());
                     Toast.makeText(RegistrationActivity.this,
