@@ -46,6 +46,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
     }
 
+    public void goBack(View view) {
+        startActivity(new Intent(ForgotPasswordActivity.this, LoginActivity.class));
+        finish();
+    }
+
     @Override
     public void onBackPressed()
     {

@@ -87,11 +87,13 @@ public class HostGameFragment extends Fragment implements AdapterView.OnItemSele
         Button timePickerButton = (Button) root.findViewById(R.id.timePickButton);
         Button hostButton = (Button) root.findViewById(R.id.hostGameButton);
         Button hostBackButton = (Button) root.findViewById(R.id.hostGameBackButton);
+        Button helpButton = (Button) root.findViewById(R.id.helpButton);
 
         datePickerButton.setOnClickListener(this);
         timePickerButton.setOnClickListener(this);
         hostButton.setOnClickListener(this);
         hostBackButton.setOnClickListener(this);
+        helpButton.setOnClickListener(this);
 
         //timePicker = (TimePicker) findViewById(R.id.timePicker);
         //datePicker = (DatePicker) findViewById(R.id.datePicker);
@@ -222,7 +224,24 @@ public class HostGameFragment extends Fragment implements AdapterView.OnItemSele
             hostNewGame(v);
         } else if (v.getId() == R.id.hostGameBackButton) {
             cancelGame(v);
+        } else if (v.getId() == R.id.helpButton) {
+            showHelp(v);
         }
+    }
+
+    public void showHelp(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Intensity Meter");
+        builder.setMessage("The intensity meter gauges how competitive or intense you expect a game to be. For example, an intensity of 5 would be a game played on a really high level," +
+                            " while an intensity of 3 would be a moderately intense game.");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void attachListenerToSpinner() {
@@ -436,10 +455,7 @@ public class HostGameFragment extends Fragment implements AdapterView.OnItemSele
         fragment.show(getFragmentManager(), "datePicker");
     }
 
-    public void showHelp(View view) {
 
-
-    }
 
 
 
