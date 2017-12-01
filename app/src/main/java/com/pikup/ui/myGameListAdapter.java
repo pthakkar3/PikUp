@@ -57,6 +57,7 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         TextView listLocation = (TextView) listViewItem.findViewById(R.id.listLocation);
         TextView listTime = (TextView) listViewItem.findViewById(R.id.listTime);
         TextView listDate = (TextView) listViewItem.findViewById(R.id.listDate);
+        TextView listCapacity = (TextView) listViewItem.findViewById(R.id.listCapacity);
         RatingBar listIntensityBar = (RatingBar) listViewItem.findViewById(R.id.listIntensityBar);
         Button quitGame = (Button) listViewItem.findViewById(R.id.quitGame);
 
@@ -73,6 +74,7 @@ public class myGameListAdapter extends ArrayAdapter<Game> {
         listDate.setText(dateFormat.format(game.getTimeOfGame()));
         listLocation.setText(game.getLocationTitle());
         listIntensityBar.setRating(game.getIntensity());
+        listCapacity.setText("Capacity: " + game.getPlayerUIDList().size() + " / " + game.getCapacity());
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         currentRef = mDatabase.child("gamesList");
