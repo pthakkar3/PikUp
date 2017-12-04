@@ -9,3 +9,5 @@
 .externalNativeBuild
 app/google-services.json
 *.xml
+*.java
+app/src/main/java/com/pikup/ui/MyGamesFragment.java
