@@ -24,7 +24,7 @@ PikUp is a service to facilitate the play of pick-up games. Currently, users nee
 
 ### Known Bugs:
 	- Sometimes the map markers disappear when return to main page.
-
+	- Missing a rating system for players and games.
 
 
 ## Getting Started - Install Guide
