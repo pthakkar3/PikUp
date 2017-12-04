@@ -52,7 +52,8 @@ Android Studio will then display a screen showing all the devices you can run th
 Here, you have two options:<br />
  1. Connect your own Android device with USB debugging turned on in Developer Settings, or <br />
  2. Create a new Virtual Device that will run on the emulator provided by Android Studio (You may have to install some software based on the virtual device settings you choose.) <br />
-Android Studio will then run the application on your selected device.
+ 
+Android Studio will then run the application on your selected device.<br />
                             
 Please allow the emulator some time to boot up and get started; the emulator itself is a heavy application and may take some time to load.
 
