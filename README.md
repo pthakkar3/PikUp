@@ -2,13 +2,13 @@
 
 PikUp, by SportsHacks Limited
 
-PikUp is a service to facilitate the play of pick-up games. Currently, users need a Georgia Institute of Technology email address to register with the service. Once logged-in, users can organize pick-up games by sport, intensity, among other criteria. Users can also browse and join existing games. (need detail update)
+PikUp is a service to facilitate the play of pick-up games. Currently, users need a Georgia Institute of Technology email address to register with the service. Once logged-in, users can organize pick-up games by sport, intensity, among other criteria. Users can also browse and join existing games.
 
 <p align="center">
-  <img src="./PikUpLogo.png" width="100%"/>
+  <img src="./PikUpLogo.png" width="50%"/>
 </p>
 
-## PikUp 1.1 Release Notes
+## PikUp 1.0 Release Notes
 
 ### New Features:
 
